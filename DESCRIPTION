@@ -1,0 +1,17 @@
+Package: hrvhra
+Type: Package
+Title: Calculating HRV and HRA parameters
+Version: 0.1.0
+Date: 2018-04-28
+Depends: R (>= 2.10)
+Imports: assertthat
+Author: Jaroslaw Piskorski
+Maintainer: Jaroslaw Piskorski <jaropis@zg.home.pl>
+Description: Functions for calculating heart rate variability (HRV) and heart
+    rate asymmetry (HRA) descriptors based on the RR intervals time series and the
+    beat type annotations vector (if available).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
+Suggests: testthat
