@@ -4,13 +4,13 @@
 \name{RR}
 \alias{RR}
 \title{RR intervals time series with annotations (flags)}
-\format{Dataframe containing an
+\format{Dataframe containing an RR intervals time series with annotations.
 \describe{
 \item{RR}{RR intervals}
 \item{flags}{annotations for the RR intervals, 0 stands for a beat of sinus origin}
 }}
 \source{
-own ECG
+my own ECG
 }
 \usage{
 RR
