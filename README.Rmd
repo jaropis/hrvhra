@@ -37,7 +37,7 @@ hrvhra(RR$RR, RR$flags)
 ```
 
 #### Plot the Poincare plot
-```{r example2, eval=FALSE}
+```{r example2}
 drawpp(RR$RR, RR$flags)
 ```
 

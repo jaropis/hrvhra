@@ -90,7 +90,7 @@ get_runs <- function(rr,
 #'
 #' @inheritParams split_on_annot
 
-#' @return a two-element list, the first element is the list of runs, the second is the vector holding the directions of the runs
+#' @return a two-element list, the first element is a list of runs, the second is a vector holding the directions of the runs
 
 split_all_into_runs <- function(rr, annotations) {
   list_of_separate_segments <- split_on_annot(rr, annotations)

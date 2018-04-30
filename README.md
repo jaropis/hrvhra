@@ -37,6 +37,8 @@ hrvhra(RR$RR, RR$flags)
 drawpp(RR$RR, RR$flags)
 ```
 
+![](README-example2-1.png)
+
 <img src="README_image.png" width="467" />
 
 #### Check the quality of your RR-intervals time series based on the annotations

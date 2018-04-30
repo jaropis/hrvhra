@@ -12,7 +12,7 @@ split_all_into_runs(rr, annotations)
 \item{annotations}{vector containing annotations for the RR intervals}
 }
 \value{
-a two-element list, the first element is the list of runs, the second is the vector holding the directions of the runs
+a two-element list, the first element is a list of runs, the second is a vector holding the directions of the runs
 }
 \description{
 This function splits the whole recording into disjoint monotonic runs of RR

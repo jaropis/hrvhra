@@ -15,7 +15,7 @@ hrvhra(rr, annotations)
 an 1 x 10 vector containing SDNN, SD1, SD2, SD1I, SDNNd, SDNNa, SD1d, SD1a, SD2d, SD2a  descriptors
 }
 \description{
-This function returns the basic HRV descriptors related to the Poincare plot
+This function returns the basic HRV descriptors related to the Poincare plot.
 }
 \examples{
 hrvhra(RR$RR, RR$flags)
