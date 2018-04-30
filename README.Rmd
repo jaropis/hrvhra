@@ -37,8 +37,12 @@ hrvhra(RR$RR, RR$flags)
 ```
 
 #### Plot the Poincare plot
-```{r example2}
+```{r example2, eval=FALSE}
 drawpp(RR$RR, RR$flags)
+```
+
+```{r example3_fig, echo=FALSE}
+knitr::include_graphics("README_image.png")
 ```
 
 #### Check the quality of your RR-intervals time series based on the annotations
