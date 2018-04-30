@@ -27,5 +27,9 @@ direction_down = NULL, no_change = NULL
 \examples{
 countruns(RR$RR, RR$flags)
 countruns(RR$RR)
+
+}
+\references{
+J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and acceleration runs, Physiological measurement 32 (8), (2011)
 }
 

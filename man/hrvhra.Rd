@@ -19,5 +19,9 @@ This function returns the basic HRV descriptors related to the Poincare plot
 }
 \examples{
 hrvhra(RR$RR, RR$flags)
+
+}
+\references{
+J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 }
 

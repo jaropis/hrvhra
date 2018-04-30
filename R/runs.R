@@ -132,6 +132,8 @@ split_all_into_runs <- function(rr, annotations) {
 #' @examples
 #' countruns(RR$RR, RR$flags)
 #' countruns(RR$RR)
+#'
+#' @references J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and acceleration runs, Physiological measurement 32 (8), (2011)
 
 countruns <- function(rr, annotations=c()) {
   # checking if RR vector the correct type and is long enough to proceed

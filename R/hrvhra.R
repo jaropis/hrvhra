@@ -91,6 +91,8 @@ drawpp <- function(rr, annotations, vname="RR", ...) {
 #'
 #' @examples
 #' hrvhra(RR$RR, RR$flags)
+#'
+#' @references J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 
 hrvhra <- function(rr, annotations) {
   pp <- preparepp(rr, annotations)
