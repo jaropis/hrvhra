@@ -32,7 +32,7 @@ split_on_annot <- function(rr, annotations) {
 #' This is a helper function used to count runs in a single segment, resulting
 #' from splitting the whole RR time series on non-zero annotations
 #'
-#' @param rr vector containing RR intervals of only sinus origin
+#' @param rr vector containing RR intervals of only sinus origin of length at least 2
 #' @param all_runs list that keeps all the runs in order
 #' @param directions vector that keeps the designation - whether the run in the all_runs list is a deceleration or aceleration or noChange
 #'
@@ -41,11 +41,15 @@ split_on_annot <- function(rr, annotations) {
 get_runs <- function(rr,
                      all_runs = list(),
                      directions = c()) {
-  last <- ifelse(rr[1] == rr[2], 0, ifelse(rr[1] < rr[2], 1,-1))
+  last <- ifelse(rr[1] == rr[2], 0, ifelse(rr[1] < rr[2], 1, -1))
   begin <- 1
-  for (index in seq(length = (length(rr) - 2)) + 1) {
+  for (index in seq(2, length(rr))) { # length rr must be >= 2, so no problem here
     current <-
       ifelse(rr[index] == rr[index + 1], 0, ifelse(rr[index] < rr[index + 1], 1, -1))
+
+    if (index == length(rr))
+      current <- 2 # this is a signal that the loop has reached the final RR which MUST be a reference beat, so it MUST be different than the last beat, hence 2
+
     if (current != last) {
       if (last == -1) {
         all_runs <- c(all_runs, list(rr[(begin):index]))
@@ -64,21 +68,6 @@ get_runs <- function(rr,
     }
   }
 
-  # now check the last run - checked separately so that the previous loop is
-  # simpler (a bit redundant, though) -
-
-  if (last == -1) {
-    all_runs <- c(all_runs, list(rr[(begin):length(rr)]))
-    directions <- c(directions, "Down")
-  }
-  if (last == 0) {
-    all_runs <- c(all_runs, list(rr[(begin):length(rr)]))
-    directions <- c(directions, "no_Change")
-  }
-  if (last == 1) {
-    all_runs <- c(all_runs, list(rr[(begin):length(rr)]))
-    directions <- c(directions, "Up")
-  }
   return(list(all_runs = all_runs, directions = directions))
 }
 
