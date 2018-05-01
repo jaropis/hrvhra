@@ -3,7 +3,7 @@
 hrvhra
 ======
 
-The goal of hrvhra is to provide functions to calculate the most often used, time domain, variance- and runs-based HRV and HRA descriptors, as well as draw the Poincare plot and assess the quality of your RR-intervals time series based on the annotations vector. All you need is your RR-intervals time series, prefferably with the annotations (i.e. the annotations for each RR interval). The annotations should be as follows: 0-beat of sinus origin, 1-beat of ventricular origin, 2-beat of supraventricular origin, 3-artifact. Any annotation which is not one of these 4 values will be assigned the "unknown" label.
+The goal of hrvhra is to provide functions to calculate the most often used, time domain, variance- and runs-based HRV and HRA descriptors, as well as draw the Poincare plot and assess the quality of your RR-intervals time series based on the annotations vector. All you need is your RR-intervals time series, preferably with the annotations (i.e. the annotations for each RR interval). The annotations should be as follows: 0-beat of sinus origin, 1-beat of ventricular origin, 2-beat of supraventricular origin, 3-artifact. Any annotation which is not one of these 4 values will be assigned the "unknown" label.
 
 Installation
 ------------
