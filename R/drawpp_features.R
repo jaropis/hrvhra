@@ -1,13 +1,24 @@
+#' function which returns the Poincare plot perpendicular line
+#' @param rr vector with RR intervals
+#' @param centroid the x coordinate of the centroid
+#' @param centroid_offset how far the centroid should be from the perpendicular line
 perp_line <- function(centroid, rr, centroid_offset){
   x <- seq(min(rr)-centroid_offset * 3, max(rr)+centroid_offset * 3, by=0.1)
   return(list(x, -1*x + 2 * centroid))
 }
 
+#' function which returns the Poincare plot parallel line
+#' @param rr vector with RR intervals
+#' @param centroid the x coordinate of the centroid
+#' @param centroid_offset how far the centroid should be from the paralell line
 parall_line <- function(centroid, centroid_offset, rr){
   x <- seq(min(rr)- 3 * centroid_offset, max(rr)+3*centroid_offset, by=0.1)
   return(list(x, x - 2 * centroid_offset))
 }
 
+#' function which returns the coordinates of the projection of a point on l2
+#' @param (x, y) coordinates of the point to be projected
+#' @param centroid_offset centroid offset
 perp_point <- function(x, y, centroid_offset){
   return(c(x, y, (x+y) / 2 + centroid_offset, (x+y) / 2 - centroid_offset))
 }
