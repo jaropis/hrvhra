@@ -9,7 +9,7 @@
 #' @param annotations vector containing annotations for the RR intervals
 #' @return a n x 2 matrix containing the filtered Poincare plot data
 #' @import assertthat
-
+#' @export
 preparepp <- function(rr, annotations = c()) {
   # checking if RR vector the correct type and is long enough to proceed
   assert_that(is.vector(rr), is.numeric(rr), noNA(rr),
