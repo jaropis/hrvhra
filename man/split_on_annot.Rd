@@ -19,4 +19,3 @@ This function returns a list of disjoing segments - mini RR-time series which
 only contain beats of sinus origin. The function breaks the original RR time
 series on annotations which are not 0
 }
-

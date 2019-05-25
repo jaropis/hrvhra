@@ -32,4 +32,3 @@ countruns(RR$RR)
 \references{
 J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and acceleration runs, Physiological measurement 32 (8), (2011)
 }
-

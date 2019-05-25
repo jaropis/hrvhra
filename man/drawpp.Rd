@@ -22,4 +22,3 @@ This function draws the Poincare plot prepared by the \code{preparePP} function
 drawpp(RR$RR, RR$flags)
 drawpp(RR$RR, RR$flags, vname="PP", col="gray", bg="blue")
 }
-

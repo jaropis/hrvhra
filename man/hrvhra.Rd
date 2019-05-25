@@ -24,4 +24,3 @@ hrvhra(RR$RR, RR$flags)
 \references{
 J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 }
-

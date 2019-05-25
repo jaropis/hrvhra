@@ -20,4 +20,3 @@ namely it prepares the auxiliary rr_i and rr_ii vectors and
 filters them appropriately, so that no non-physiological pairs
 occur in the Poincare plot
 }
-

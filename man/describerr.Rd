@@ -19,4 +19,3 @@ intervals time series
 \examples{
 describerr(RR$flags)
 }
-

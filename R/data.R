@@ -1,5 +1,6 @@
 #' RR intervals time series with annotations (flags)
 #'
+#' @name RR
 #' @source my own ECG
 #' @format Dataframe containing an RR intervals time series with annotations.
 #' \describe{
@@ -10,4 +11,5 @@
 #' \dontrun{
 #' RR
 #' }
-"RR"
+#' @export
+'RR'

@@ -7,7 +7,7 @@
 get_runs(rr, all_runs = list(), directions = c())
 }
 \arguments{
-\item{rr}{vector containing RR intervals of only sinus origin}
+\item{rr}{vector containing RR intervals of only sinus origin of length at least 2}
 
 \item{all_runs}{list that keeps all the runs in order}
 
@@ -20,4 +20,3 @@ a two-element list, the first element is the list of runs, the second is the vec
 This is a helper function used to count runs in a single segment, resulting
 from splitting the whole RR time series on non-zero annotations
 }
-

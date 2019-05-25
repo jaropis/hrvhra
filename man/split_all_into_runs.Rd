@@ -19,4 +19,3 @@ This function splits the whole recording into disjoint monotonic runs of RR
 intervals of sinus origin and assigns a direction (Up, Down, no_Change)
 to each of them
 }
-
