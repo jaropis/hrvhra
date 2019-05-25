@@ -181,6 +181,3 @@ drawpp_features <- function(rr, annotations, vname = "RR", centroid_offset = 15,
   text(x_text - 1/20 * diff(range(rr)), y_text + 1/20 * diff(range(rr)), "Id", cex = 1.5)
   dev.off()
 }
-
-
-drawpp_features(RR$RR[(length(RR$RR)/2):length(RR$RR)], RR$flags[(length(RR$RR)/2):length(RR$RR)])

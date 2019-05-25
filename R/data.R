@@ -11,5 +11,4 @@
 #' \dontrun{
 #' RR
 #' }
-#' @export
 'RR'

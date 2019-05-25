@@ -3,8 +3,7 @@ Type: Package
 Title: Calculating HRV and HRA parameters
 Version: 0.1.0
 Date: 2018-04-28
-Depends: R (>= 2.10),
-         assertthat
+Depends: R (>= 2.10)
 Imports: assertthat
 Author: Jaroslaw Piskorski
 Maintainer: Jaroslaw Piskorski <jaropis@zg.home.pl>
