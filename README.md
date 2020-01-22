@@ -70,3 +70,7 @@ References
 J Piskorski, P Guzik, Geometry of the Poincaré plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 
 J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and acceleration runs, Physiological measurement 32 (8), (2011)
+
+Acknowledgements
+-------------
+This project currently funded by the grant "Rytm dobowy asymetrii rytmu serca u osób zdrowych. Związki asymetrii rytmu serca z wiekiem, wskaźnikami antropometrycznymi, aktywnością fizyczną oraz płcią
