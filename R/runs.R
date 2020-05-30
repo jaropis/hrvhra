@@ -210,3 +210,49 @@ countruns <- function(rr, annotations=c()) {
     )
   )
 }
+
+#' Function binding the results of runs calculation for different datasets (files)
+#' into a single table
+#'
+#' Sometimes many files are calculated and many results objects are collected (one for each dataset / file)
+#' in this situation it may be helpful to present them as a table. This function collects all the results
+#' as rows of a table, padding with zeros when necessary
+#' @param results list of results from the `countruns` function
+#' @param rownames rownames for the table
+#' @return data.table
+#' @export
+bind_runs_as_table <- function(results, rownames = NULL) {
+  len_up <- 0
+  len_down <- 0
+  len_no_change <- 0
+  ## in this loop I am getting the maximum run length of a specific type for the analyzed group of recordings
+  for (result in results){
+    if (length(result$direction_up) > len_up) len_up <- length(result$direction_up)
+    if (length(result$direction_down) > len_down) len_down <- length(result$direction_down)
+    if (length(result$no_change) > len_no_change) len_no_change <- length(result$no_change)
+  }
+
+  final_results <- data.frame()
+  for (result in results) {
+    final_results <- rbind(final_results,
+                           c(result$direction_up[1:len_up],
+                             result$direction_down[1:len_down],
+                             result$no_change[1:len_no_change]))
+  }
+
+  if(!is.null(rownames)) {
+    final_results <- cbind(rownames, final_results)
+  }
+
+  computed_names <- c("file",
+                     paste("AR", 1:lenUp, sep = ""),
+                     paste("DR", 1:lenDown, sep = ""))
+  if(len_no_change > 0) {
+    computed_names <- c(computed_names,paste("N", seq_len(len_no_change), sep = ""))
+  }
+  colnames(final_results) <- computed_names
+  # and finally replacing NA's by zeros, so that it is easier to process
+  # (in fact, count 0 is obviously no NA, as 0 is a valid number of runs)
+  final_resultss[is.na(final_results)] <- as.integer(0)
+  final_results
+}
