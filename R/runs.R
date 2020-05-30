@@ -7,7 +7,6 @@
 #' @param rr vector containing RR intervals time series
 #' @param annotations vector containing annotations for the RR intervals
 #' @return a list of vectors corresponding to disjoint RR time-series of sinus origin
-
 split_on_annot <- function(rr, annotations) {
   bad_idx <- which(annotations != 0)
   if (length(bad_idx) == 0)
@@ -37,7 +36,6 @@ split_on_annot <- function(rr, annotations) {
 #' @param directions vector that keeps the designation - whether the run in the all_runs list is a deceleration or aceleration or noChange
 #'
 #' @return a two-element list, the first element is the list of runs, the second is the vector holding the directions of the runs
-
 get_runs <- function(rr,
                      all_runs = list(),
                      directions = c()) {
@@ -71,14 +69,13 @@ get_runs <- function(rr,
   return(list(all_runs = all_runs, directions = directions))
 }
 
-#' Spliting the RR time series into monotoinc runs and assigning directions
+#' Splitting the RR time series into monotonic runs and assigning directions
 #'
 #' This function splits the whole recording into disjoint monotonic runs of RR
 #' intervals of sinus origin and assigns a direction (Up, Down, no_Change)
 #' to each of them
 #'
 #' @inheritParams split_on_annot
-
 #' @return a two-element list, the first element is a list of runs, the second is a vector holding the directions of the runs
 
 split_all_into_runs <- function(rr, annotations) {
@@ -89,6 +86,7 @@ split_all_into_runs <- function(rr, annotations) {
   for (segment in list_of_separate_segments) {
     if (length(segment) > 1) {
       temp <- get_runs(segment)
+      temp[[1]][[1]] <- temp[[1]][[1]][-c(1)] # knocking off the first element of the run, because it MUST be reference
       separate_runs_and_directions$all_runs <-
         c(separate_runs_and_directions$all_runs, temp$all_runs)
       separate_runs_and_directions$directions <-
@@ -100,6 +98,19 @@ split_all_into_runs <- function(rr, annotations) {
               msg = "no full runs in this dataset")
 
   return(separate_runs_and_directions)
+}
+
+#' Function to get runs sequence in an RR intervals time series, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")
+#' @param rr vector containing RR intervals time series
+#' @param annotations vector containing annotations for the RR intervals
+#' @return vector of runs sequence, like c("DR3", "AR4", "N1", "AR3", "DR2")
+#' @export
+get_runs_sequence <- function(rr, annotations) {
+  runs <- split_all_into_runs(rr, annotations)
+  paste0(str_replace(runs[[2]], "Up", "AR") %>%
+           str_replace("Down", "DR") %>%
+           str_replace("no_Change", "N"),
+         sapply(runs[[1]], length))
 }
 
 #' Counting monotonic runs in an RR intervals time series.

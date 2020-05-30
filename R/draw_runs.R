@@ -97,7 +97,9 @@ calculate_label_positions <- function(runs_vec) {
 #' @param rr_intervals vector of rr intervals, if null, rr intervals will be simulated on the basis of the provided labels
 #' @param labels vector of labels like c("DR3", "AR4", "N1", "AR3", "DR2") - if rr_intervals are provided, labels will be ignored
 #' @return does not return anything, run for side effects (plotting / exporting plot)
-generate_runs_plot <- function(rr_intervals = NULL, labels = c("DR4", "AR4", "N1", "AR3", "DR2")) {
+generate_runs_plot <- function(rr_intervals = NULL,
+                               annotations = NULL,
+                               labels = c("DR4", "AR4", "N1", "AR3", "DR2")) {
   if (is.null(rr_intervals) & is.null(labels)) {
     stop("at least one of rr_intervals or labels must be provided")
   }
@@ -105,24 +107,16 @@ generate_runs_plot <- function(rr_intervals = NULL, labels = c("DR4", "AR4", "N1
   if (is.null(rr_intervals)) {
     rr_intervals = simulate_rr_intervals(labels)
   } else {
-    labels = generate_runs_labels(rr_intervals)
+    if(is.null(annotations)) {
+      annotations <- rr_intervals * 0
+    }
+    labels = get_runs_sequence(rr_intervals, annotations)
   }
 
   label_positions <- calculate_labels_positions(rr_intervals, labels)
 
   plot(rr_intervals, ylim=c(min(rr_intervals), max(rr_intervals)), xlab="beat number", ylab="RR interval [ms]")
 
-  ## the first segment
-  if (substr(labels[[1]], 1, 1) == "D"){
-    rr_intervals0 <- rr_intervals[1] + 150
-    lty <- 3
-  } else {
-    rr_intervals0 <- rr_intervals[1] - 150
-    lty <- 1
-  }
-  rr_intervals0X <- -0.5
-
-  segments(rr_intervals0X, rr_intervals0, 1, rr_intervals[1] , lty = lty, lwd = 3)
   for (beat in 2:length(rr_intervals)) {
     if (rr_intervals[beat]>rr_intervals[beat-1]) {
       segments(beat-1, rr_intervals[beat-1], beat, rr_intervals[beat], lty=1, lwd=3, col="black")
@@ -159,9 +153,7 @@ generate_runs_plot <- function(rr_intervals = NULL, labels = c("DR4", "AR4", "N1
     rr_intervalsLast <- rr_intervals[length(rr_intervals)]+150
     lty <- 1
   }
-  rr_intervalsLastX <- length(rr_intervals) + 1
 
-  segments(rr_intervalsLastX, rr_intervalsLast, length(rr_intervals), rr_intervals[length(rr_intervals)] , lty = lty, lwd=3)
   for (label_idx in 1:length(label_positions)) {
     text(label_positions[[label_idx]][1],label_positions[[label_idx]][2], labels[label_idx])
   }
@@ -172,5 +164,4 @@ generate_runs_plot <- function(rr_intervals = NULL, labels = c("DR4", "AR4", "N1
     points(length(rr_intervals), rr_intervals[length(rr_intervals)], pch=21, col="black", bg="black", cex=1.4)}
 }
 
-#generate_runs_plot()
 
