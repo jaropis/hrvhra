@@ -172,5 +172,5 @@ generate_runs_plot <- function(rr_intervals = NULL, labels = c("DR4", "AR4", "N1
     points(length(rr_intervals), rr_intervals[length(rr_intervals)], pch=21, col="black", bg="black", cex=1.4)}
 }
 
-generate_runs_plot()
+#generate_runs_plot()
 

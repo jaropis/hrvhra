@@ -4,8 +4,16 @@
 \alias{drawpp_features}
 \title{Drawing reference features of the Poincare plot}
 \usage{
-drawpp_features(rr, annotations, vname = "RR", centroid_offset = 15,
-  n_points_1 = 10, n_points_2 = 5, scale_1 = 0.5, scale_2 = 0.4)
+drawpp_features(
+  rr,
+  annotations,
+  vname = "RR",
+  centroid_offset = 15,
+  n_points_1 = 10,
+  n_points_2 = 5,
+  scale_1 = 0.5,
+  scale_2 = 0.4
+)
 }
 \arguments{
 \item{rr}{vector containing RR intervals time series}
