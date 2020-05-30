@@ -1,139 +1,176 @@
-generate_runs_plot <- function(runs_list=c("DR3", "AR4", "N1", "AR3", "DR2")) {
-  generate_runs_list <- function(runs_list) {
-    wektor <- c()
-    wektor[1] = 894
-    #first generating the vector
-    for (run in runs_list) {
-      run_length <- as.numeric(substr(run, nchar(run), nchar(run)))
-      direction <- substr(run,1,1)
-      direction <- ifelse(direction == "D", 1, ifelse(direction == "A", -1,0))
-      fatigue <- 0
-      for (idx in 1:run_length){
-        wektor <- c(wektor, wektor[length(wektor)] + direction * (runif(1, min=100, max = 200)) - sign(direction) * fatigue)
-        fatigue <- fatigue+30
+#' helper function to check if a number is even
+#' @param x number to be checked
+#' @return TRUE/FALSE
+iseven <- function(x) x %% 2 == 0
+
+#' function generating the positions of labels to annotate a runs plot
+#' @param labels vector with a list of runs names, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")
+#' @param rr rr intervals time series
+#' @param d the distance from segment/point
+#' @param x_offset offset on the x axis
+#' @param y_offset offset on the y axis
+#' @return list of labels positions in points
+#' @export
+calculate_labels_positions <- function(rr, labels, d = 3, x_offset = 0.40, y_offset = 50) {
+  position <- 1
+  positions_list <- list()
+  for (run in labels) {
+    run_length <- as.numeric(substr(run, nchar(run), nchar(run)))
+    direction <- substr(run, 1, 1)
+    # now finding the point which is of d distance from the segment (i1, x1), (i2, x2)
+    if (!iseven(run_length)) {
+      i1 <- position + (run_length %/% 2)
+      i2 <- position + (run_length %/% 2) + 1
+      message(c(i1, i2))
+      x1 <- rr[i1]
+      x2 <- rr[i2]
+
+      if (direction == 'D') {
+        d1 <- (i1 + 1/2) - 0.40
+        d2 <- (x1 + x2) / 2 + 50
+      } else {
+        d1 <- (i1 + 1/2) - 0.40
+        d2 <- (x1 + x2) / 2 - 50
       }
-      #now generating label positions
+      if (direction == 'N') {
+        d1 <- (i1+i2) / 2
+        d2 <- x1 + 50
+      }
+      positions_list <- c(positions_list, list(c(d1[1], d2[1])))
     }
+    if (iseven(run_length)) {
+      i <- position + run_length %/% 2
+      x <- rr[i]
+      if (direction == 'D') {
+        d1 <- i - x_offset
+        d2 <- x + y_offset
+      } else {
+        d1 <- i + x_offset
+        d2 <- x + y_offset
+      }
+      if (direction == "N") {
+        d1 <- i
+        d2 <- rr[i] + 50
+      }
+      positions_list <- c(positions_list, list(c(d1, d2)))
+    }
+    position <- position + run_length
+  }
+  return(positions_list)
+}
+
+#' function generating a SIMULATED rr intervals time series
+#' @param runs_vec runs_vec vector with a list of runs names, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")
+#' @param starting_rr starting rr intervals time series value
+#' @return vector
+simulate_rr_intervals <- function(runs_vec, starting_rr = c(894)) {
+  rr = starting_rr
+  for (run in runs_vec) {
+    run_length <- as.numeric(substr(run, nchar(run), nchar(run)))
+    direction <- substr(run, 1, 1)
+    direction <- ifelse(direction == "D", 1, ifelse(direction == "A", -1, 0))
+    fatigue <- 0
+    for (idx in 1:run_length){
+      rr <- c(rr, rr[length(rr)] + direction * (runif(1, min=100, max = 200)) - sign(direction) * fatigue)
+      fatigue <- fatigue + 30
+    }
+  }
+  rr
+}
+
+#' function drawing a SIMULATED RR runs (for presentation purposes)
+#' @param runs_vec vector with a list of runs names, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")
+#' @return list of: simulated RR intervals, label positions, labels
+#' @export
+calculate_label_positions <- function(runs_vec) {
+
+  if (is.char(runs_vec[[1]])) {
+    # here we simulate the RR intervals
+    # now generating label positions
     previous <- 1
-    label_positions <- generate_label_positions(runs_list, wektor, d=1)
-    return(list(wektor, label_positions, labels=runs_list))
+    label_positions <- calculate_label_positions(runs_vec, rr_intervals, d=1)
+    list(rr_vec = rr_vec, label_positions = label_positions, labels = labels)
+  }
+}
+
+#' function generating runs plot
+#' @param rr_intervals vector of rr intervals, if null, rr intervals will be simulated on the basis of the provided labels
+#' @param labels vector of labels like c("DR3", "AR4", "N1", "AR3", "DR2") - if rr_intervals are provided, labels will be ignored
+#' @return does not return anything, run for side effects (plotting / exporting plot)
+generate_runs_plot <- function(rr_intervals = NULL, labels = c("DR4", "AR4", "N1", "AR3", "DR2")) {
+  if (is.null(rr_intervals) & is.null(labels)) {
+    stop("at least one of rr_intervals or labels must be provided")
   }
 
-  generate_label_positions <- function(runs_list, wektor, d = 3){ # d is the distance from segment/point
-    iseven <- function(x) x %% 2 == 0
-    position <- 1
-    lista_wynikow <- list()
-    for (run in runs_list) {
-      run_length <- as.numeric(substr(run,nchar(run),nchar(run)))
-      direction <- substr(run,1,1)
-      ## teraz znajduje punkt odlegly od ODCINKA (i1, x1), (i2, x2) o d
-      if (!iseven(run_length)){
-        i1 <- position + (run_length %/% 2)
-        i2 <- position + (run_length %/% 2) + 1
-        print(c(i1, i2))
-        x1 <- wektor[i1]
-        x2 <- wektor[i2]
-        C <- (x1+x2)/2 - 1/(x2-x1) * (i1 + 1/2)
-        if (direction == 'D'){
-          d1 <- (i1+1/2)-0.40
-          d2 <- (x1+x2)/2 + 50
-        } else {
-          d1 <- (i1+1/2)-0.40
-          d2 <- (x1+x2)/2 - 50
-        }
-        if (direction == 'N'){
-          d1 <- (i1+i2)/2
-          d2 <- x1 + 50
-        }
-        lista_wynikow <- c(lista_wynikow, list(c(d1[1], d2[1])))
-      }
-      if (iseven(run_length)){
-        i <- position + run_length %/% 2
-        x <- wektor[i]
-        if (direction == 'D'){
-          d1 <- i- 0.4
-          d2 <- x + 50
-        } else {
-          d1 <- i + 0.4
-          d2 <- x + 50
-        }
-        if (direction == "N"){
-          d1 <- i
-          d2 <- wektor[i] + 50
-        }
-        lista_wynikow <- c(lista_wynikow, list(c(d1, d2)))
-      }
-      position <- position + run_length
-    }
-    return(lista_wynikow)
-  }
-
-  runsy <- generate_runs_list(runs_list)
-  wektor <- runsy[[1]]
-  label_positions <- runsy[[2]]
-  labels <- runsy[[3]]
-  #jpeg(file="figure1", height=200, width=800))
-  plot(wektor, ylim=c(min(wektor), max(wektor)), xlab="beat number", ylab="RR interval [ms]")
-  ## tutaj rysujemy pierwszy segment - przerywany, HR rosnie
-  if (substr(runs_list[[1]],1,1)=="D"){
-    wektor0 <- wektor[1] + 150
-    typ_linii <- 3
+  if (is.null(rr_intervals)) {
+    rr_intervals = simulate_rr_intervals(labels)
   } else {
-    wektor0 <- wektor[1] - 150
-    typ_linii <- 1
-  }
-  wektor0X <- -0.5
-
-  segments(wektor0X, wektor0, 1, wektor[1] , lty = typ_linii, lwd = 3)
-  for (beat in 2:length(wektor)) {
-    if (wektor[beat]>wektor[beat-1]) {
-      segments(beat-1, wektor[beat-1], beat, wektor[beat], lty=1, lwd=3, col="black")
-    }
+    labels = generate_runs_labels(rr_intervals)
   }
 
-  for (beat in 2:length(wektor)){
-    if (wektor[beat]<wektor[beat-1]){
-      segments(beat-1, wektor[beat-1], beat, wektor[beat], lty=3, lwd=3, col="black")
-    }
-  }
+  label_positions <- calculate_labels_positions(rr_intervals, labels)
 
-  points(wektor, pch=21,col="black", bg="white")
+  plot(rr_intervals, ylim=c(min(rr_intervals), max(rr_intervals)), xlab="beat number", ylab="RR interval [ms]")
 
-  for (beat in 2:(length(wektor)-1)) {
-    if ((wektor[beat]<wektor[beat-1] | wektor[beat]==wektor[beat-1]) & (wektor[beat]<wektor[beat+1])){
-      points(beat, wektor[beat], pch=21, col="black", bg="black", cex=1.4)
-    }
-  }
-
-  for (beat in 2:(length(wektor)-1)) {
-    if ((wektor[beat]>wektor[beat-1] | wektor[beat]==wektor[beat-1]) & (wektor[beat]>wektor[beat+1])) {
-      points(beat, wektor[beat], pch=21, col="black", bg="gray50", cex=1.4)
-    }
-  }
-
-  if (wektor[1]>wektor[2]) {
-    points(1, wektor[1], pch=21, col="black", bg="gray50", cex=1.4)} else {points(1, wektor[1], pch=21, col="black", bg="black", cex=1.4)}
-
-  if (substr(runs_list[[length(runs_list)]], 1, 1) == "D"){
-    wektorLast <- wektor[length(wektor)] - 150
-    typ_linii <- 3
+  ## the first segment
+  if (substr(labels[[1]], 1, 1) == "D"){
+    rr_intervals0 <- rr_intervals[1] + 150
+    lty <- 3
   } else {
-    wektorLast <- wektor[length(wektor)]+150
-    typ_linii <- 1
+    rr_intervals0 <- rr_intervals[1] - 150
+    lty <- 1
   }
-  wektorLastX <- length(wektor) + 1
+  rr_intervals0X <- -0.5
 
-  segments(wektorLastX, wektorLast, length(wektor), wektor[length(wektor)] , lty = typ_linii, lwd=3)
+  segments(rr_intervals0X, rr_intervals0, 1, rr_intervals[1] , lty = lty, lwd = 3)
+  for (beat in 2:length(rr_intervals)) {
+    if (rr_intervals[beat]>rr_intervals[beat-1]) {
+      segments(beat-1, rr_intervals[beat-1], beat, rr_intervals[beat], lty=1, lwd=3, col="black")
+    }
+  }
+
+  for (beat in 2:length(rr_intervals)){
+    if (rr_intervals[beat]<rr_intervals[beat-1]){
+      segments(beat-1, rr_intervals[beat-1], beat, rr_intervals[beat], lty=3, lwd=3, col="black")
+    }
+  }
+
+  points(rr_intervals, pch=21,col="black", bg="white")
+
+  for (beat in 2:(length(rr_intervals)-1)) {
+    if ((rr_intervals[beat]<rr_intervals[beat-1] | rr_intervals[beat]==rr_intervals[beat-1]) & (rr_intervals[beat]<rr_intervals[beat+1])){
+      points(beat, rr_intervals[beat], pch=21, col="black", bg="black", cex=1.4)
+    }
+  }
+
+  for (beat in 2:(length(rr_intervals)-1)) {
+    if ((rr_intervals[beat]>rr_intervals[beat-1] | rr_intervals[beat]==rr_intervals[beat-1]) & (rr_intervals[beat]>rr_intervals[beat+1])) {
+      points(beat, rr_intervals[beat], pch=21, col="black", bg="gray50", cex=1.4)
+    }
+  }
+
+  if (rr_intervals[1]>rr_intervals[2]) {
+    points(1, rr_intervals[1], pch=21, col="black", bg="gray50", cex=1.4)} else {points(1, rr_intervals[1], pch=21, col="black", bg="black", cex=1.4)}
+
+  if (substr(labels[[length(labels)]], 1, 1) == "D"){
+    rr_intervalsLast <- rr_intervals[length(rr_intervals)] - 150
+    lty <- 3
+  } else {
+    rr_intervalsLast <- rr_intervals[length(rr_intervals)]+150
+    lty <- 1
+  }
+  rr_intervalsLastX <- length(rr_intervals) + 1
+
+  segments(rr_intervalsLastX, rr_intervalsLast, length(rr_intervals), rr_intervals[length(rr_intervals)] , lty = lty, lwd=3)
   for (label_idx in 1:length(label_positions)) {
     text(label_positions[[label_idx]][1],label_positions[[label_idx]][2], labels[label_idx])
   }
 
-  if (substr(runs_list[[length(runs_list)]],1,1)=="D") {
-    points(length(wektor), wektor[length(wektor)], pch=21, col="black", bg="gray50", cex=1.4)
+  if (substr(labels[[length(labels)]],1,1)=="D") {
+    points(length(rr_intervals), rr_intervals[length(rr_intervals)], pch=21, col="black", bg="gray50", cex=1.4)
   } else {
-    points(length(wektor), wektor[length(wektor)], pch=21, col="black", bg="black", cex=1.4)}
+    points(length(rr_intervals), rr_intervals[length(rr_intervals)], pch=21, col="black", bg="black", cex=1.4)}
 }
 
-png(filename="figure1.png", height = 1200, width = 2800, res = 300)
 generate_runs_plot()
-dev.off()
+
