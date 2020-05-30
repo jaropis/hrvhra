@@ -245,14 +245,15 @@ bind_runs_as_table <- function(results, rownames = NULL) {
   }
 
   computed_names <- c("file",
-                     paste("AR", 1:lenUp, sep = ""),
-                     paste("DR", 1:lenDown, sep = ""))
+                      paste("AR", 1:len_up, sep = ""),
+                      paste("DR", 1:len_down, sep = ""))
+
   if(len_no_change > 0) {
     computed_names <- c(computed_names,paste("N", seq_len(len_no_change), sep = ""))
   }
   colnames(final_results) <- computed_names
   # and finally replacing NA's by zeros, so that it is easier to process
   # (in fact, count 0 is obviously no NA, as 0 is a valid number of runs)
-  final_resultss[is.na(final_results)] <- as.integer(0)
+  final_results[is.na(final_results)] <- as.integer(0)
   final_results
 }
