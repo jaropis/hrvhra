@@ -51,8 +51,8 @@ test_that("Various runs are counted and interpreted correctly", {
                list(
                  direction_up = c(
                    up1 = 0,
-                   up2 = 0,
-                   up3 = 1,
+                   up2 = 1,
+                   up3 = 0,
                    up4 = 1
                  ),
                  direction_down = c(
@@ -66,8 +66,8 @@ test_that("Various runs are counted and interpreted correctly", {
                list(
                  direction_up = c(
                    up1 = 0,
-                   up2 = 0,
-                   up3 = 1,
+                   up2 = 1,
+                   up3 = 0,
                    up4 = 1
                  ),
                  direction_down = c(down1 = 0, down2 = 1),
@@ -84,11 +84,11 @@ test_that("Various runs are counted and interpreted correctly", {
                  direction_down = c(
                    down1 = 0,
                    down2 = 0,
-                   down3 = 0,
-                   down4 = 1
+                   down3 = 1,
+                   down4 = 0
                  ),
                  no_change = c(NULL)
                ))
   # checking if flags may be left out
-  expect_equal(countruns(RR$RR, RR$flags),countruns(RR$RR))
+  expect_equal(countruns(RR$RR, RR$flags), countruns(RR$RR))
 })
