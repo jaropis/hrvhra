@@ -65,7 +65,7 @@ get_runs <- function(rr,
       last <- current
     }
   }
-
+  all_runs[[1]] <- all_runs[[1]][-c(1)] # knocking off the first element of the segment, because it MUST be reference
   return(list(all_runs = all_runs, directions = directions))
 }
 
@@ -86,7 +86,6 @@ split_all_into_runs <- function(rr, annotations) {
   for (segment in list_of_separate_segments) {
     if (length(segment) > 1) {
       temp <- get_runs(segment)
-      temp[[1]][[1]] <- temp[[1]][[1]][-c(1)] # knocking off the first element of the run, because it MUST be reference
       separate_runs_and_directions$all_runs <-
         c(separate_runs_and_directions$all_runs, temp$all_runs)
       separate_runs_and_directions$directions <-
