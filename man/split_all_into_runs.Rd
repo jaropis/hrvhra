@@ -2,7 +2,7 @@
 % Please edit documentation in R/runs.R
 \name{split_all_into_runs}
 \alias{split_all_into_runs}
-\title{Spliting the RR time series into monotoinc runs and assigning directions}
+\title{Splitting the RR time series into monotonic runs and assigning directions}
 \usage{
 split_all_into_runs(rr, annotations)
 }
