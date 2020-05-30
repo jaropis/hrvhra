@@ -21,7 +21,6 @@ calculate_labels_positions <- function(rr, labels, d = 3, x_offset = 0.40, y_off
     if (!iseven(run_length)) {
       i1 <- position + (run_length %/% 2)
       i2 <- position + (run_length %/% 2) + 1
-      message(c(i1, i2))
       x1 <- rr[i1]
       x2 <- rr[i2]
 
@@ -97,9 +96,10 @@ calculate_label_positions <- function(runs_vec) {
 #' @param rr_intervals vector of rr intervals, if null, rr intervals will be simulated on the basis of the provided labels
 #' @param labels vector of labels like c("DR3", "AR4", "N1", "AR3", "DR2") - if rr_intervals are provided, labels will be ignored
 #' @return does not return anything, run for side effects (plotting / exporting plot)
-generate_runs_plot <- function(rr_intervals = NULL,
-                               annotations = NULL,
-                               labels = c("DR4", "AR4", "N1", "AR3", "DR2")) {
+#' @export
+draw_runs <- function(rr_intervals = NULL,
+                      annotations = NULL,
+                      labels = c("DR4", "AR4", "N1", "AR3", "DR2")) {
   if (is.null(rr_intervals) & is.null(labels)) {
     stop("at least one of rr_intervals or labels must be provided")
   }
@@ -115,7 +115,7 @@ generate_runs_plot <- function(rr_intervals = NULL,
 
   label_positions <- calculate_labels_positions(rr_intervals, labels)
 
-  plot(rr_intervals, ylim=c(min(rr_intervals), max(rr_intervals)), xlab="beat number", ylab="RR interval [ms]")
+  plot(rr_intervals, ylim=c(min(rr_intervals) - 20, max(rr_intervals) + 20), xlab="beat number", ylab="RR interval [ms]")
 
   for (beat in 2:length(rr_intervals)) {
     if (rr_intervals[beat]>rr_intervals[beat-1]) {
