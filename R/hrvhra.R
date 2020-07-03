@@ -131,6 +131,7 @@ draw_pp_base <- function(pp, vname = "RR", ...) {
 #' @param vname variable name - this will be used for construction \code{xlab} and \code{ylab} for the Poincare plot
 #' @param \\dots Additional arguments passed on to \code{plot}
 #' @importFrom graphics abline
+#' @import plotly
 #'
 draw_pp_plotly <- function(PP, vname = "RR", ...) {
   plot_options <- list(...)

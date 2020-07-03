@@ -82,9 +82,8 @@ simulate_rr_intervals <- function(runs_vec, starting_rr = c(894)) {
 #' @param runs_vec vector with a list of runs names, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")
 #' @return list of: simulated RR intervals, label positions, labels
 #' @export
-#' TUTU: ponizej: konflikt - ponizej wywolywana jest ta sama funkcja!!! WTF! jak to wgle dziala
 calculate_label_positions <- function(runs_vec) {
-
+  # TUTU: ponizej: konflikt - ponizej wywolywana jest ta sama funkcja!!! WTF! jak to wgle dziala
   if (is.char(runs_vec[[1]])) {
     # here we simulate the RR intervals
     # now generating label positions
