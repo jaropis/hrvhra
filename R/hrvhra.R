@@ -46,23 +46,56 @@ preparepp <- function(rr, annotations = c()) {
   return(cbind(rr_i, rr_ii))
 }
 
+#' Wrapper for preparepp - accepts dataframes (with the intention to make this a constructor)
+#' @param rr_df dataframe with RR intervals (first column) and annotations (second column)
+#' @return poincare plot object
+
+pp <- function(rr_df) {
+  assert_that((is.data.frame(rr_df) && ncol(rr_df) %in% c(1, 2)) || (is.vector(rr_df) && is.numeric(rr_df)),
+              msg = "rr_df must be a dataframe with the first column containing RR intervals and the optional second column with annotations, or an RR vector")
+  {
+    if (is.vector(rr_df)) {
+      preparepp(rr_df, rr_df  * 0)
+    } else if (ncol(rr_df) == 2) {
+      preparepp(rr_df[[1]], rr_df[[2]])
+    } else {
+      preparepp(rr_df[[1]], rr_df[[1]] * 0)
+    }
+  }%>% as.data.frame()
+}
+
 #' Drawing the Poincare plot
 #'
 #' This function draws the Poincare plot prepared by the \code{preparePP} function
 #'
-#' @inheritParams preparepp
+#' @param pp poincare plot object
 #' @param vname variable name - this will be used for construction \code{xlab} and \code{ylab} for the Poincare plot
+#' @param mode plot mode - either "base" or "plotly"
 #' @param \\dots Additional arguments passed on to \code{plot}
 #' @export
-#' @importFrom graphics abline
 #'
 #' @examples
-#' drawpp(RR$RR, RR$flags)
-#' drawpp(RR$RR, RR$flags, vname="PP", col="gray", bg="blue")
+#' pp(RR) %>% drawpp()
 
-drawpp <- function(rr, annotations, vname = "RR", ...) {
+drawpp <- function(pp, vname = "RR", mode = "base", ...) {
+  if (mode == "base") {
+    draw_pp_base(pp, vname = vname, ...)
+  } else {
+    draw_pp_plotly(pp, vname = vname, ...)
+  }
+}
+
+#' Drawing the Poincare plot using base
+#'
+#' This function draws the Poincare plot prepared by the \code{preparePP} function
+#'
+#' @param pp poincare plot object
+#' @param vname variable name - this will be used for construction \code{xlab} and \code{ylab} for the Poincare plot
+#' @param \\dots Additional arguments passed on to \code{plot}
+#' @importFrom graphics abline
+#'
+draw_pp_base <- function(pp, vname = "RR", ...) {
   assert_that(is.character(vname), msg = "vname needs to be a string")
-  pp <- preparepp(rr, annotations)
   additional = list(...)
   # default appearance of the Poincare plot
   list_of_parameters <-
@@ -85,10 +118,62 @@ drawpp <- function(rr, annotations, vname = "RR", ...) {
   }
 
   # and plot
+  print(list_of_parameters)
   do.call(what = "plot", list_of_parameters, quote = TRUE)
   abline(0, 1, lty = 2, lwd = 2)
 }
 
+#' Drawing the Poincare plot using base
+#'
+#' This function draws the Poincare plot prepared by the \code{preparePP} function
+#'
+#' @param PP poincare plot object
+#' @param vname variable name - this will be used for construction \code{xlab} and \code{ylab} for the Poincare plot
+#' @param \\dots Additional arguments passed on to \code{plot}
+#' @importFrom graphics abline
+#'
+draw_pp_plotly <- function(PP, vname = "RR", ...) {
+  plot_options <- list(...)
+  x <- list(
+    title = paste0(vname, "<sub>i</sub>")
+  )
+  y <- list(
+    title = paste0(vname, "<sub>i+1</sub>")
+  )
+  n_lines <- nrow(PP)
+  scatter_tooltips <- sapply(seq(length = nrow(PP)),
+                             function(idx) {
+                               paste0("(", PP[["rr_i"]][idx], ", ", PP[["rr_ii"]][idx], ")<br>",
+                                      'if'(PP[["rr_i"]][idx] >= PP[["rr_ii"]][idx],
+                                           'if'(PP[["rr_i"]][idx] == PP[["rr_ii"]][idx],
+                                                "neutral", "acceleration")
+                                           , "deceleration"))
+                             })
+
+  PP %>%
+    plot_ly(x = ~rr_i, y = ~rr_ii) %>%
+    add_trace(
+      type = "scatter",
+      mode = "markers",
+      x = ~rr_i,
+      y = ~rr_ii,
+      text = scatter_tooltips,
+      hoverinfo = "text",
+      size = I('if'(is.null(plot_options[["size"]]), 18, plot_options[["size"]])),
+      alpha = I('if'(is.null(plot_options[["alpha"]]), 0.2, plot_options[["alpha"]])),
+      color = I('if'(is.null(plot_options[["col"]]), "orange", plot_options[["col"]]))
+    ) %>%
+    add_trace(
+      type = "scatter",
+      mode = "lines",
+      text = rep("line of identity", n_lines),
+      x = ~rr_i,
+      y = ~rr_i,
+      color = I("black"),
+      hoverinfo = "text") %>%
+    hide_legend() %>%
+    layout(xaxis = x, yaxis = y)
+}
 #' HRV descriptors
 #'
 #' This function returns the basic HRV descriptors related to the Poincare plot.
@@ -168,7 +253,6 @@ hrvhra <- function(rr, annotations) {
 #' @export
 #'
 #' @examples
-#' describerr(RR$flags)
 
 describerr <- function(annotations) {
   assert_that(is.vector(annotations),
