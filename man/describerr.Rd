@@ -16,6 +16,3 @@ an 1 x 6 vector containing the number of all beats (all), sinus beats (N), ventr
 This function returns the statistics of the beats in the analyzed RR
 intervals time series
 }
-\examples{
-describerr(RR$flags)
-}

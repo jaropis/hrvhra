@@ -11,6 +11,9 @@ test_that("HRV and HRA behavior is as expected on good and bad input data", {
   expect_silent(describerr(RR$flags))
   expect_silent(describerr(c(0, 0, 0, 0, 0, 0, 0, 0)))
 
+  expect_silent(pp(data.frame(c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250),
+                              c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250) * 0)))
+  expect_silent(pp(data.frame(c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250))))
 
   expect_error(hrvhra("992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250",
                       c(0, 0, 0, 0, 0, 0, 0, 0)),
@@ -37,6 +40,15 @@ test_that("HRV and HRA behavior is as expected on good and bad input data", {
   expect_error(hrvhra(c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250),
                       c(1, 0, 1, 0, 1, 0, 0, 1)),
                "too many non-sinus beats to proceed")
+
+  expect_error(pp(list(c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250))),
+               "rr_df must be a dataframe with the first column containing RR intervals and the optional second column with annotations")
+  expect_error(pp(data.frame(c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250),
+                              c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250),
+                              c(992.500, 756.250, 798.750, 821.875, 853.125, 875.000, 858.750, 796.250))),
+                "rr_df must be a dataframe with the first column containing RR intervals and the optional second column with annotations")
+
+
 
   expect_warning(hrvhra(rep(992.5, 10), rep(0, 10)), "There is no variability - is this a pacemaker?")
   expect_warning(hrvhra(c(992.5, 756.205, 992.5, 756.205, 992.5, 756.205, 992.5, 756.205, 992.5, 756.205), rep(0, 10)),
