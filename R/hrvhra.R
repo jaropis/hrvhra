@@ -49,7 +49,7 @@ preparepp <- function(rr, annotations = c()) {
 #' Wrapper for preparepp - accepts dataframes (with the intention to make this a constructor)
 #' @param rr_df dataframe with RR intervals (first column) and annotations (second column)
 #' @return poincare plot object
-
+#' @export
 pp <- function(rr_df) {
   assert_that((is.data.frame(rr_df) && ncol(rr_df) %in% c(1, 2)) || (is.vector(rr_df) && is.numeric(rr_df)),
               msg = "rr_df must be a dataframe with the first column containing RR intervals and the optional second column with annotations, or an RR vector")
@@ -61,7 +61,7 @@ pp <- function(rr_df) {
     } else {
       preparepp(rr_df[[1]], rr_df[[1]] * 0)
     }
-  }%>% as.data.frame()
+  } %>% as.data.frame()
 }
 
 #' Drawing the Poincare plot
