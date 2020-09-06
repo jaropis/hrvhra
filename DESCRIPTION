@@ -8,7 +8,8 @@ Imports: assertthat,
          stringr,
          plotly,
          dplyr,
-         slider
+         slider,
+         lubridate
 Author: Jaroslaw Piskorski
 Maintainer: Jaroslaw Piskorski <jaropis@zg.home.pl>
 Description: Functions for calculating heart rate variability (HRV) and heart

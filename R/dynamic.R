@@ -13,10 +13,10 @@ reverse_df <- function(df_elem) {
 #' @param reverse whether the RR intervals time series should be reversed (necessary for jumping window)
 #' @return data frame with time_track as the first vector
 add_time_track <- function(RR, now = "2020-09-05 12:11:00", reverse = FALSE) {
-  print(reverse)
   if (reverse) {
     RR <- reverse_df(RR)
   }
+  RR <- rbind(c(0, 0), RR) # we need a point which really corresponds to 0 - it will be left out by slider (remember that RR are already INTERVALS)
   beginning <- as.POSIXct(now)
   time_track <- beginning + cumsum(RR[["RR"]] / 1000) # this will give us a time track in seconds
   cbind(time_track, RR)
@@ -60,7 +60,8 @@ time_based_slide <- function(RR, window = 5, now = "2020-09-05 12:11:00") {
               RR_time_track$time_track,
               ~.x,
               .complete = TRUE,
-              .before = minutes(window))
+              .before = minutes(window)) %>%
+    Filter(function(elem) !is.null(elem), .)
 }
 
 #' Function dividing the dataframe into SLIDING windows of `window` length
