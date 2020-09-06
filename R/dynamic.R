@@ -89,7 +89,7 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
       reverse_time_track(cut_end)
 }
 
-#' Function dividing the dataframe into JUMPING windows of `window` length based on index
+#' Function dividing the data.frame into JUMPING windows of `window` length based on index
 #' @param RR RR data
 #' @param window the length of the window in beats
 #' @param cut_end if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording
@@ -97,8 +97,15 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
 #' @export
 index_based_jump <- function(RR, window = 300, cut_end = FALSE) {
   if (cut_end) {
-    split <- slide(c(0, RR$RR), ~.x, .before = window - 1, .step = window ) # ATTENTION! prepending a 0 because of the way the slider works (the first window would be just the first element)
-    split[[1]] <- NULL
+    N <- length(RR$RR)
+    window_multiples <- floor(N / window)
+    if (window_multiples < 1) {
+      stop("The lenght of the time series is too short for the selected window")
+    }
+    full_multiples <- window_multiples * window
+    remainder <- N - full_multiples
+    split <- c(list(RR[1:remainder, ]),
+               slide(RR[(remainder + 1):N, ], ~.x, .after = window - 1, .step = window ))
   } else {
     split <- slide(RR$RR, ~.x, .after = window - 1, .step = window)
   }
