@@ -108,7 +108,7 @@ index_based_jump <- function(RR, window = 300, cut_end = FALSE) {
     split <- c(list(RR[1:remainder, ]),
                slide(RR[(remainder + 1):N, ], ~.x, .after = window - 1, .step = window ))
   } else {
-    split <- slide(RR$RR, ~.x, .after = window - 1, .step = window)
+    split <- slide(RR, ~.x, .after = window - 1, .step = window)
   }
   split %>% Filter(function(elem) !is.null(elem), .)
 }

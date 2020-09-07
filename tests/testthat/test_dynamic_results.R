@@ -56,3 +56,59 @@ test_that("the time_based_jump functions cuts at correct places", {
     sum(time_jump_cut_end_true[[length(time_jump_cut_end_true)]]$RR) / 60 / 1000 # the time in the last window is exactly equal to that calculated above
   )
 })
+
+## setup for testing index_based_jump - cut_end_false
+window_rnd_index_jump <- sample(300:500, 1)
+index_jump_cut_end_false <- index_based_jump(RR, window = window_rnd_index_jump, cut_end = FALSE)
+N_300_full <- floor(nrow(RR) / window_rnd_index_jump) * window_rnd_index_jump
+last_window_first_elem_cut_end_false <- RR$RR[N_300_full + 1]
+last_but_one_window_last_elem_cut_end_false <- RR$RR[N_300_full]
+first_window_last_elem_cut_end_false <- RR$RR[[window_rnd_index_jump]]
+second_window_first_elem_cut_end_false <- RR$RR[[window_rnd_index_jump + 1]]
+
+test_that("the index_based_jump functions cuts at correct places cut_out_end false", {
+  expect_equal(
+    last_window_first_elem_cut_end_false,
+    index_jump_cut_end_false[[length(index_jump_cut_end_false)]]$RR[[1]]# the time in the first window is exactly equal to that calculated above
+  )
+  expect_equal(
+    last_but_one_window_last_elem_cut_end_false,
+    index_jump_cut_end_false[[length(index_jump_cut_end_false) - 1]]$RR[[window_rnd_index_jump]]# the time in the last window is exactly equal to that calculated above
+  )
+  expect_equal(
+    first_window_last_elem_cut_end_false,
+    index_jump_cut_end_false[[1]]$RR[[window_rnd_index_jump]]
+  )
+  expect_equal(
+    second_window_first_elem_cut_end_false,
+    index_jump_cut_end_false[[2]]$RR[[1]]
+  )
+})
+
+## setup for testing index_based_jump - cut_end_true
+index_jump_cut_end_true <- index_based_jump(RR, window = window_rnd_index_jump, cut_end = TRUE)
+N_300_full <- floor(nrow(RR) / window_rnd_index_jump) * window_rnd_index_jump
+N_end_first_window <- nrow(RR) - N_300_full
+last_window_first_elem_cut_end_true <- RR$RR[nrow(RR) - window_rnd_index_jump + 1]
+last_but_one_window_last_elem_cut_end_true <- RR$RR[N_300_full - window_rnd_index_jump + N_end_first_window]
+first_window_last_elem_cut_end_true <- RR$RR[[N_end_first_window]]
+second_window_first_elem_cut_end_true <- RR$RR[[N_end_first_window + 1]]
+
+test_that("the index_based_jump functions cuts at correct places cut_out_end true", {
+  expect_equal(
+    last_window_first_elem_cut_end_true,
+    index_jump_cut_end_true[[length(index_jump_cut_end_true)]]$RR[[1]]# the time in the first window is exactly equal to that calculated above
+  )
+  expect_equal(
+    last_but_one_window_last_elem_cut_end_true,
+    index_jump_cut_end_true[[length(index_jump_cut_end_true) - 1]]$RR[[window_rnd_index_jump]]# the time in the last window is exactly equal to that calculated above
+  )
+  expect_equal(
+    first_window_last_elem_cut_end_true,
+    index_jump_cut_end_true[[1]]$RR[[nrow(index_jump_cut_end_true[[1]])]]
+  )
+  expect_equal(
+    second_window_first_elem_cut_end_true,
+    index_jump_cut_end_true[[2]]$RR[[1]]
+  )
+})
