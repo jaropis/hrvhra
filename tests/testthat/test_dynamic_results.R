@@ -23,14 +23,17 @@ test_that("the time_based_slide functions cuts at correct places", {
           )
 })
 
+## setup for testing time_based_slide
+window_rnd <- sample(300:400, 1)
+index_slide <- index_based_slide(RR, window = window_rnd)
 
 test_that("the index_based_slide functions cuts at correct places", {
   expect_equal(
-    sum(RR$RR[1:(N_5 +  1)]) / 60 / 1000,
-    sum(time_slide[[1]]$RR) / 60 / 1000  # the time in the first window is exactly equal to that calculated above
+    sum(RR$RR[1:(window_rnd)]) / 60 / 1000,
+    sum(index_slide[[1]]$RR) / 60 / 1000  # the time in the first window is exactly equal to that calculated above
   )
   expect_equal(
-    sum(RR$RR[(nrow(RR) - N_m_5):nrow(RR)]) / 60 / 1000,
-    sum(time_slide[[length(time_slide)]]$RR) / 60 / 1000 # the time in the last window is exactly equal to that calculated above
+    sum(RR$RR[(nrow(RR) - window_rnd + 1):nrow(RR)]) / 60 / 1000,
+    sum(index_slide[[length(index_slide)]]$RR) / 60 / 1000 # the time in the last window is exactly equal to that calculated above
   )
 })
