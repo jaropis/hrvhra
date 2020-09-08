@@ -44,5 +44,6 @@ calculate_frequency_bands <- function(spectrum, bands = frequency_bands) {
 #' @export
 calculate_RR_spectrum <- function(RR, bands = frequency_bands) {
   lomb_spectrum(RR) %>%
-    calculate_frequency_bands(bands)
+    calculate_frequency_bands(bands) %>%
+    unlist()
 }
