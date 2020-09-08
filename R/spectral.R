@@ -1,4 +1,5 @@
 #' Function calculating Lomb-Scargle periodogram and returning power within the pre-defined bands
+#' power is normalized so that the total power is equal to the variance of the recording
 #' @param RR RR object
 #' @return list with power and frequency
 lomb_spectrum <- function(RR) {
