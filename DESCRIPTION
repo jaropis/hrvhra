@@ -5,12 +5,12 @@ Version: 0.1.0
 Date: 2018-04-28
 Depends: R (>= 2.10), 
          stringr, 
-         lubridate
+         lubridate,
+         dplyr,
+         slider
 Imports: assertthat,
          stringr,
          plotly,
-         dplyr,
-         slider,
          lomb
 Author: Jaroslaw Piskorski
 Maintainer: Jaroslaw Piskorski <jaropis@zg.home.pl>

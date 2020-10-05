@@ -237,7 +237,9 @@ bind_runs_as_table <- function(results, rownames = NULL) {
     final_results <- rbind(final_results,
                            c(result$direction_up[1:len_up],
                              result$direction_down[1:len_down],
-                             result$no_change[1:len_no_change]))
+                             'if'(is.null(result$no_change), NA, result$no_change[1:len_no_change])
+                             )
+                           )
   }
 
   if(!is.null(rownames)) {
