@@ -235,9 +235,16 @@ bind_runs_as_table <- function(results, rownames = NULL) {
   final_results <- data.frame()
   for (result in results) {
     final_results <- rbind(final_results,
-                           c(result$direction_up[1:len_up],
-                             result$direction_down[1:len_down],
-                             'if'(is.null(result$no_change), NA, result$no_change[1:len_no_change])
+                           # theoretically, we could have only  accelerations, only decelerations or no no-change
+                           c('if'(is.null(result$direction_up),
+                                  rep(NA, len_up),
+                                  result$direction_up[1:len_up]),
+                             'if'(is.null(result$direction_down),
+                                  rep(NA, len_down),
+                                  result$direction_down[1:len_down]),
+                             'if'(is.null(result$no_change),
+                                  rep(NA, len_no_change),
+                                  result$no_change[1:len_no_change])
                              )
                            )
   }
