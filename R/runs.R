@@ -254,8 +254,8 @@ bind_runs_as_table <- function(results, rownames = NULL) {
   }
 
   computed_names <- c("file",
-                      paste("AR", 1:len_up, sep = ""),
-                      paste("DR", 1:len_down, sep = ""))
+                      paste("DR", 1:len_up, sep = ""),
+                      paste("AR", 1:len_down, sep = ""))
 
   if(len_no_change > 0) {
     computed_names <- c(computed_names,paste("N", seq_len(len_no_change), sep = ""))
