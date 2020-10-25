@@ -118,7 +118,6 @@ draw_pp_base <- function(pp, vname = "RR", ...) {
   }
 
   # and plot
-  print(list_of_parameters)
   do.call(what = "plot", list_of_parameters, quote = TRUE)
   abline(0, 1, lty = 2, lwd = 2)
 }
