@@ -244,33 +244,49 @@ bind_runs_as_table <- function(results, rownames = NULL) {
                                   result$direction_down[1:len_down]),
                              'if'(is.null(result$no_change),
                                   rep(NA, len_no_change),
-                                  result$no_change[1:len_no_change])
-                             ),
-                           'if'(is.null(result$direction_up),
-                                0,
-                                length(result$direction_up)),
-                           'if'(is.null(result$direction_down),
-                                0,
-                                length(result$direction_down))
+                                  result$no_change[1:len_no_change]),
+                             'if'(is.null(result$direction_up),
+                                  0,
+                                  get_longest_run(result$direction_up, "up")),
+                             'if'(is.null(result$direction_down),
+                                  0,
+                                  get_longest_run(result$direction_down, "down")),
+                             'if'(is.null(result$no_change),
+                                  0,
+                                  get_longest_run(result$no_change, "no_change"))
                            )
+    )
   }
-
+  
+  # adding passed rownames or numbers
   if(!is.null(rownames)) {
     final_results <- cbind(rownames, final_results)
+  } else {
+    final_results <- cbind(seq(nrow(final_results)), final_results)
   }
 
   computed_names <- c("file",
                       paste("DR", 1:len_up, sep = ""),
-                      paste("AR", 1:len_down, sep = ""), 
-                      "DR_MAX",
-                      "AR_MAX")
+                      paste("AR", 1:len_down, sep = ""))
 
   if(len_no_change > 0) {
     computed_names <- c(computed_names, paste("N", seq_len(len_no_change), sep = ""))
   }
+  computed_names <- c(computed_names, "DR_MAX", "AR_MAX", "N_MAX")
   colnames(final_results) <- computed_names
   # and finally replacing NA's by zeros, so that it is easier to process
   # (in fact, count 0 is obviously no NA, as 0 is a valid number of runs)
   final_results[is.na(final_results)] <- as.integer(0)
   final_results
+}
+
+#' Function extracting the longest run from list
+#' @param runs_result list with runs results
+#' @param type type of run (up or down)
+#' @return int
+#' 
+get_longest_run <- function(runs_results, type) {
+  number <- names(runs_results)[length(runs_results)] %>% 
+    strsplit(type)
+  as.numeric(number[[1]][2])
 }
