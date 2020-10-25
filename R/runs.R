@@ -245,7 +245,13 @@ bind_runs_as_table <- function(results, rownames = NULL) {
                              'if'(is.null(result$no_change),
                                   rep(NA, len_no_change),
                                   result$no_change[1:len_no_change])
-                             )
+                             ),
+                           'if'(is.null(result$direction_up),
+                                0,
+                                length(result$direction_up)),
+                           'if'(is.null(result$direction_down),
+                                0,
+                                length(result$direction_down))
                            )
   }
 
@@ -255,10 +261,12 @@ bind_runs_as_table <- function(results, rownames = NULL) {
 
   computed_names <- c("file",
                       paste("DR", 1:len_up, sep = ""),
-                      paste("AR", 1:len_down, sep = ""))
+                      paste("AR", 1:len_down, sep = ""), 
+                      "DR_MAX",
+                      "AR_MAX")
 
   if(len_no_change > 0) {
-    computed_names <- c(computed_names,paste("N", seq_len(len_no_change), sep = ""))
+    computed_names <- c(computed_names, paste("N", seq_len(len_no_change), sep = ""))
   }
   colnames(final_results) <- computed_names
   # and finally replacing NA's by zeros, so that it is easier to process
