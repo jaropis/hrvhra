@@ -202,14 +202,15 @@ hrvhra <- function(rr, annotations) {
   sd2 <- sqrt(var((rr_i + rr_ii) / sqrt(2)) * correct)
   sdnn <- sqrt(1 / 2 * (sd2 ^ 2 + sd1 ^ 2))
   sd1I <- sqrt((1 / n) * sum((rr_i - rr_ii) ^ 2) / 2)
+  mean_rr <- mean(rr, na.rm = TRUE)
 
   if (sdnn == 0)
     warning("There is no variability - is this a pacemaker?")
   if (sd2 == 0)
     warning("There is no long-term variability - is this a bigeminy?")
 
-  results_hrv <- c(sdnn, sd1, sd2, sd1I)
-  names(results_hrv) <- c("SDNN", "SD1", "SD2", "SD1I")
+  results_hrv <- c(sdnn, sd1, sd2, sd1I, mean_rr)
+  names(results_hrv) <- c("SDNN", "SD1", "SD2", "SD1I", "MEAN_RR")
 
   # now on to HRA parameters
 
