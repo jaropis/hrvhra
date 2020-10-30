@@ -250,12 +250,13 @@ hrvhra <- function(rr, annotations) {
 #' intervals time series
 #'
 #' @param annotations The annotations in the analyzed RR intervals time series
+#' @param rr rr intervals
 #' @return an 1 x 6 vector containing the number of all beats (all), sinus beats (N), ventricular beats (V), supraventricular beats (S), artifacts (X) and unidentifed beats (U)
 #' @export
 #'
 #' @examples
 
-describerr <- function(annotations) {
+describerr <- function(rr, annotations) {
   assert_that(is.vector(annotations),
               is.numeric(annotations),
               noNA(annotations),
@@ -266,14 +267,16 @@ describerr <- function(annotations) {
   supraventricular_beats <- sum(annotations == 2)
   artifacts <- sum(annotations == 3)
   unidentified_beats <- sum(!(annotations %in% c(0, 1, 2, 3)))
+  total_time <- sum(rr)
   statistics <- c(
     all_beats,
     sinus_beats,
     ventricular_beats,
     supraventricular_beats,
     artifacts,
-    unidentified_beats
+    unidentified_beats,
+    total_time
   )
-  names(statistics) <- c("all", "N", "V", "S", "X", "U")
+  names(statistics) <- c("all", "N", "V", "S", "X", "U", "total_time")
   return(statistics)
 }
