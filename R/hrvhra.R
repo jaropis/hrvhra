@@ -267,7 +267,7 @@ describerr <- function(rr, annotations) {
   supraventricular_beats <- sum(annotations == 2)
   artifacts <- sum(annotations == 3)
   unidentified_beats <- sum(!(annotations %in% c(0, 1, 2, 3)))
-  total_time <- sum(rr, na.rm = TRURE)
+  total_time <- sum(rr, na.rm = TRUE)
   statistics <- c(
     all_beats,
     sinus_beats,
