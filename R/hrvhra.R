@@ -7,20 +7,37 @@
 #'
 #' @param rr vector containing RR intervals time series
 #' @param annotations vector containing annotations for the RR intervals
+#' @param throwError whether to throw error or return a vector with NAs
 #' @return a n x 2 matrix containing the filtered Poincare plot data
 #' @import assertthat
 #' @export
-preparepp <- function(rr, annotations = c()) {
+preparepp <- function(rr, annotations = c(), throwError = FALSE) {
   # checking if RR vector the correct type and is long enough to proceed
-  assert_that(is.vector(rr), is.numeric(rr), noNA(rr),
-              msg = "the rr vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
-  assert_that(length(rr) > 3, msg = "RR vector too short to form a Poincare plot")
+  if(!is.vector(rr) || !is.numeric(rr) || !noNA(rr)) {
+    if (throwError) {
+      stop("the rr vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
+    } else {
+      return(NULL)
+    }
+  }
+  if (length(rr) <= 3) {
+    if (throwError) {
+      stop("RR vector too short to form a Poincare plot")
+    } else {
+      return(NULL)
+    }
+  } 
 
   # checking if annotations vector the coannotationsect type and is long enough to proceed
-  assert_that(is.vector(annotations),
-              is.numeric(annotations),
-              noNA(annotations),
-              msg = "the annotations vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
+  if (!is.vector(annotations) ||
+      !is.numeric(annotations) ||
+      !noNA(annotations)) {
+    if (throwError) {
+      stop("the annotations vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
+    } else {
+      return(NULL)
+    }
+  }           
   assert_that(length(annotations) == length(rr), msg = "annotations and RR vectors need to be of the same length")
 
   if (length(annotations) == 0)
@@ -48,20 +65,26 @@ preparepp <- function(rr, annotations = c()) {
 
 #' Wrapper for preparepp - accepts dataframes (with the intention to make this a constructor)
 #' @param rr_df dataframe with RR intervals (first column) and annotations (second column)
+#' @param throwError whether to throw error or return a vector with NAs
 #' @return poincare plot object
 #' @export
-pp <- function(rr_df) {
+pp <- function(rr_df, throwError = FALSE) {
   assert_that((is.data.frame(rr_df) && ncol(rr_df) %in% c(1, 2)) || (is.vector(rr_df) && is.numeric(rr_df)),
               msg = "rr_df must be a dataframe with the first column containing RR intervals and the optional second column with annotations, or an RR vector")
   {
-    if (is.vector(rr_df)) {
-      preparepp(rr_df, rr_df  * 0)
+    pp_plot <- if (is.vector(rr_df)) {
+      preparepp(rr_df, rr_df  * 0, throwError = throwError)
     } else if (ncol(rr_df) == 2) {
-      preparepp(rr_df[[1]], rr_df[[2]])
+      preparepp(rr_df[[1]], rr_df[[2]], throwError = throwError)
     } else {
-      preparepp(rr_df[[1]], rr_df[[1]] * 0)
+      preparepp(rr_df[[1]], rr_df[[1]] * 0, throwError = throwError)
     }
-  } %>% as.data.frame()
+  } 
+  if (is.null(pp_plot)) {
+    return(NULL) 
+  } else {
+    return(as.data.frame(pp_plot))
+  }
 }
 
 #' Drawing the Poincare plot
@@ -188,8 +211,11 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #'
 #' @references J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 
-hrvhra <- function(rr, annotations) {
+hrvhra <- function(rr, annotations, throwError = FALSE) {
   pp <- preparepp(rr, annotations)
+  if (is.null(pp)) {
+    return (c("SDNN" = NA, "SD1" = NA, "SD2" = NA, "SD1I" = NA, "MEAN_RR" = NA, "SDNNd" = NA, "SDNNa" = NA, "SD1d" = NA, "SD1a" = NA, "SD2d" = NA, "SD2a" = NA))
+  }
   rr_i <- pp[, "rr_i"]
   rr_ii <- pp[, "rr_ii"]
 
