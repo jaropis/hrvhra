@@ -56,7 +56,7 @@ preparepp <- function(rr, annotations = c(), throwError = FALSE) {
     rr_i <- rr_i[-c(remove_i, remove_ii)]
     rr_ii <- rr_ii[-c(remove_i, remove_ii)]
   }
-  if (length(rr_) <= 2) browser()
+  if (length(rr_i) <= 2) browser()
   # check if there are enough beats of sinus origin to proceed
   assert_that(length(rr_i) > 2, msg = "too many non-sinus beats to proceed")
 
