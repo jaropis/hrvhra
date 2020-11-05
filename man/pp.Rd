@@ -4,10 +4,12 @@
 \alias{pp}
 \title{Wrapper for preparepp - accepts dataframes (with the intention to make this a constructor)}
 \usage{
-pp(rr_df)
+pp(rr_df, throwError = FALSE)
 }
 \arguments{
 \item{rr_df}{dataframe with RR intervals (first column) and annotations (second column)}
+
+\item{throwError}{whether to throw error or return a vector with NAs}
 }
 \value{
 poincare plot object

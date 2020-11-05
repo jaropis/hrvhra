@@ -4,12 +4,14 @@
 \alias{preparepp}
 \title{Preparing data for Poincare plot descriptors calculations}
 \usage{
-preparepp(rr, annotations = c())
+preparepp(rr, annotations = c(), throwError = FALSE)
 }
 \arguments{
 \item{rr}{vector containing RR intervals time series}
 
 \item{annotations}{vector containing annotations for the RR intervals}
+
+\item{throwError}{whether to throw error or return a vector with NAs}
 }
 \value{
 a n x 2 matrix containing the filtered Poincare plot data

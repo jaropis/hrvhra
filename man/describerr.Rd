@@ -4,9 +4,11 @@
 \alias{describerr}
 \title{RR intervals time series statistics}
 \usage{
-describerr(annotations)
+describerr(rr, annotations)
 }
 \arguments{
+\item{rr}{rr intervals}
+
 \item{annotations}{The annotations in the analyzed RR intervals time series}
 }
 \value{
