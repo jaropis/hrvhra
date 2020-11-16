@@ -7,7 +7,8 @@ Depends: R (>= 2.10),
          stringr, 
          lubridate,
          dplyr,
-         slider
+         slider,
+         magrittr
 Imports: assertthat,
          stringr,
          plotly,
