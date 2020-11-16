@@ -115,7 +115,7 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
 #' @param now when does the recording begin? default is "2020-09-05 12:11:00"
 #' @export
 index_based_jump <- function(RR, window = 300, cut_end = FALSE) {
-  if (cut_end) {
+  if (!cut_end) {
     N <- length(RR$RR)
     window_multiples <- floor(N / window)
     if (window_multiples < 1) {
@@ -128,5 +128,12 @@ index_based_jump <- function(RR, window = 300, cut_end = FALSE) {
   } else {
     split <- slide(RR, ~.x, .after = window - 1, .step = window)
   }
-  split %>% Filter(function(elem) !is.null(elem), .)
+  split %<>% Filter(function(elem) !is.null(elem), .)
+  hanging_window <- 'if' (!cut_end, split[[1]], split[[length(split)]])
+  if (abs(nrow(hanging_window) - (window))/(window) >= 0.1) { # if the hanging window is not within 2% of window length
+    'if' (cut_end, split[1:(length(split) - 1)], 
+          split[2:length(split)])
+  } else {
+    split
+  } 
 }
