@@ -32,8 +32,8 @@ reverse_time_track <- function(RR_time_track, cut_end = FALSE) {
   N <- sum(lengths)
   # first we kill the full time track
   reversed_RR_dfs <- lapply(RR_time_track, function(elem) select(elem, RR, flags)) %>% # first we kill the full time track
-    lapply(function(elem) { # now reverse the elements within the list
-        reverse_df(elem)
+    lapply(function(elem) { # and reverse the elements within the list
+      reverse_df(elem)
       }
     ) %>%
     rev() # reverse the list
@@ -86,15 +86,26 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
                                       RR_time_track$time_track,
                                       "minute", .every = window,
                                       ~.x,
-                                      .complete = TRUE) %>%
+                                      .complete = TRUE,
+                                      .origin = RR_time_track$time_track[[1]]) %>%
       reverse_time_track(cut_end)
     hanging_window <- 'if' (!cut_end, resulting_windows[[1]], resulting_windows[[length(resulting_windows)]])
-    if (abs(sum(hanging_window$RR) - (window * 1000 * 60))/(window * 60 * 1000) >= 0.1) { # if the hanging window is not within 2% of window length
+    resulting_windows <- if (abs(sum(hanging_window$RR) - (window * 1000 * 60))/(window * 60 * 1000) >= 0.1) { # if the hanging window is not within 2% of window length
       'if' (cut_end, resulting_windows[1:(length(resulting_windows) - 1)], 
             resulting_windows[2:length(resulting_windows)])
     } else {
       resulting_windows
-    }
+    } 
+    # now removing 0-length RR introduced by using the slider package
+
+    resulting_windows %>% lapply(function(elem) {
+      where_zero <- which(elem$RR == 0 & elem$flags ==0)
+      if(length(where_zero) > 0) {
+        elem <- elem[-c(where_zero), ]  
+      }
+      elem
+    })
+    
 }
 
 #' Function dividing the data.frame into JUMPING windows of `window` length based on index
