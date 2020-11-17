@@ -4,7 +4,7 @@
 \alias{index_based_jump}
 \title{Function dividing the data.frame into JUMPING windows of `window` length based on index}
 \usage{
-index_based_jump(RR, window = 300, cut_end = FALSE)
+index_based_jump(RR, window = 300, cut_end = FALSE, tolerance = 0.1)
 }
 \arguments{
 \item{RR}{RR data}
@@ -13,7 +13,7 @@ index_based_jump(RR, window = 300, cut_end = FALSE)
 
 \item{cut_end}{if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording}
 
-\item{now}{when does the recording begin? default is "2020-09-05 12:11:00"}
+\item{tolerance}{what departure from the window length do we tolerate}
 }
 \description{
 Function dividing the data.frame into JUMPING windows of `window` length based on index

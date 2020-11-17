@@ -79,6 +79,7 @@ index_based_slide <- function(RR, window = 300) {
 #' @param window the length of the window in minutes
 #' @param cut_end if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording
 #' @param now when does the recording begin? default is "2020-09-05 12:11:00"
+#' @param tolerance what departure from the window length do we tolerate
 #' @export
 time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 12:11:00") {
     RR_time_track <- add_time_track(RR, now, reverse = ifelse(cut_end, FALSE, TRUE))
@@ -112,9 +113,9 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
 #' @param RR RR data
 #' @param window the length of the window in beats
 #' @param cut_end if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording
-#' @param now when does the recording begin? default is "2020-09-05 12:11:00"
+#' @param tolerance what departure from the window length do we tolerate
 #' @export
-index_based_jump <- function(RR, window = 300, cut_end = FALSE) {
+index_based_jump <- function(RR, window = 300, cut_end = FALSE, tolerance = 0.1) {
   if (!cut_end) {
     N <- length(RR$RR)
     window_multiples <- floor(N / window)
@@ -130,7 +131,7 @@ index_based_jump <- function(RR, window = 300, cut_end = FALSE) {
   }
   split %<>% Filter(function(elem) !is.null(elem), .)
   hanging_window <- 'if' (!cut_end, split[[1]], split[[length(split)]])
-  if (abs(nrow(hanging_window) - (window))/(window) >= 0.1) { # if the hanging window is not within 2% of window length
+  if (abs(nrow(hanging_window) - (window))/(window) >= tolerance) { # if the hanging window is not within 2% of window length
     'if' (cut_end, split[1:(length(split) - 1)], 
           split[2:length(split)])
   } else {

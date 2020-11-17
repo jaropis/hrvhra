@@ -15,6 +15,8 @@ time_based_jump(RR, window = 5, cut_end = FALSE, now = "2020-09-05 12:11:00")
 \item{cut_end}{if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording}
 
 \item{now}{when does the recording begin? default is "2020-09-05 12:11:00"}
+
+\item{tolerance}{what departure from the window length do we tolerate}
 }
 \description{
 Function dividing the dataframe into JUMPING windows of `window` length based on time
