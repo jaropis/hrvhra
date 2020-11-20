@@ -271,7 +271,7 @@ hrvhra <- function(rr, annotations, throwError = FALSE) {
   names(results_hra) <-
     c("SDNNd", "SDNNa", "SD1d", "SD1a", "SD2d", "SD2a")
   porta <- sum(rr_ii < rr_i) / (length(rr_i))
-  names(porta) <- "porta's index"
+  names(porta) <- "PI"
   results <- c(results_hrv, results_hra, porta)
 
   return(results)
