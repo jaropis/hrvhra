@@ -5,7 +5,13 @@
 \title{Function dividing the dataframe into JUMPING windows of `window` length based on time
 test with lapply(ala, function(elem) sum(elem$RR) / 60 / 1000)}
 \usage{
-time_based_jump(RR, window = 5, cut_end = FALSE, now = "2020-09-05 12:11:00")
+time_based_jump(
+  RR,
+  window = 5,
+  cut_end = FALSE,
+  now = "2020-09-05 12:11:00",
+  tolerance = 0.1
+)
 }
 \arguments{
 \item{RR}{RR data}
