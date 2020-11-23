@@ -90,6 +90,10 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
                                       .complete = TRUE,
                                       .origin = RR_time_track$time_track[[1]]) %>%
       reverse_time_track(cut_end)
+    if(length(resulting_windows) == 1) {
+      # early return if there is only one window
+      return(remove_zeros(resulting_windows))
+    }
     hanging_window <- 'if' (!cut_end, resulting_windows[[1]], resulting_windows[[length(resulting_windows)]])
     resulting_windows <- if (abs(sum(hanging_window$RR) - (window * 1000 * 60))/(window * 60 * 1000) >= tolerance) { # if the hanging window is not within 2% of window length
       'if' (cut_end, resulting_windows[1:(length(resulting_windows) - 1)], 
@@ -98,17 +102,20 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
       resulting_windows
     } 
     # now removing 0-length RR introduced by using the slider package
-
-    resulting_windows %>% lapply(function(elem) {
-      where_zero <- which(elem$RR == 0 & elem$flags ==0)
-      if(length(where_zero) > 0) {
-        elem <- elem[-c(where_zero), ]  
-      }
-      elem
-    })
-    
+    remove_zeros(resulting_windows)
 }
 
+#' Helper function removing zeros resulting from using the slider package
+#' @param resulting_windows  list of windows
+remove_zeros <- function(resulting_windows) {
+  resulting_windows %>% lapply(function(elem) {
+    where_zero <- which(elem$RR == 0 & elem$flags ==0)
+    if(length(where_zero) > 0) {
+      elem <- elem[-c(where_zero), ]  
+    }
+    elem
+  })
+}
 #' Function dividing the data.frame into JUMPING windows of `window` length based on index
 #' @param RR RR data
 #' @param window the length of the window in beats
