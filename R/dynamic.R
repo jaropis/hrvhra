@@ -95,22 +95,14 @@ time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 1
       # early return if there is only one window
       return(remove_zeros(resulting_windows))
     }
-    hanging_window <- 'if' (cut_end, resulting_windows[[1]], resulting_windows[[length(resulting_windows)]])
-    resulting_windows <- if (abs(sum(hanging_window$RR) - (window * 1000 * 60))/(window * 60 * 1000) >= tolerance) { # if the hanging window is not within 2% of window length
-      'if' (!cut_end, resulting_windows[1:(length(resulting_windows) - 1)], 
-            resulting_windows[2:length(resulting_windows)])
-    } else {
-      resulting_windows
-    }
-    # this is nonsense, but the slider package does not work consistently, so we will check at both ends for windows that are too short
     hanging_window <- 'if' (!cut_end, resulting_windows[[1]], resulting_windows[[length(resulting_windows)]])
     resulting_windows <- if (abs(sum(hanging_window$RR) - (window * 1000 * 60))/(window * 60 * 1000) >= tolerance) { # if the hanging window is not within 2% of window length
-      'if' (cut_end, resulting_windows[1:(length(resulting_windows) - 1)],
+      'if' (cut_end, resulting_windows[1:(length(resulting_windows) - 1)], 
             resulting_windows[2:length(resulting_windows)])
-      print("z drugiej strony")
     } else {
       resulting_windows
     }
+    
     # now removing 0-length RR introduced by using the slider package
     remove_zeros(resulting_windows)
 }
