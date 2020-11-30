@@ -70,7 +70,6 @@ shave_nonsinus <- function(RR) {
   # shaving top
   while (nrow(RR) > 0 & RR$flags[1] != 0) {
     RR <- RR[2:nrow(RR), ]
-    print(nrow(RR))
   }
   # shaving bottom
   while (nrow(RR) > 0 & RR$flags[nrow(RR)] != 0) {
