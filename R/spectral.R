@@ -11,11 +11,14 @@ frequency_bands <- list(VLF = c(0.00, .04), LF = c(0.04, 0.15), HF = c(0.15, 0.4
 #' @param RR RR object
 #' @return list with power and frequency
 lomb_spectrum <- function(RR) {
-  browser()
   x_ts <- data.frame(sampling = cumsum(RR$RR) / 1000, # to get the results in Hz on x and ms^2 on y
                      samples = RR$RR)
-  if (sum(RR$flags != 0)) {
+  if (sum(RR$flags) != 0) {
     x_ts <- x_ts[-which(RR$flags != 0), ]
+  }
+  
+  if (nrow(x_ts) <2) {
+    return (NULL)
   }
   spectrum <- lomb::lsp(x_ts,
                         type = "frequency",
@@ -30,6 +33,11 @@ lomb_spectrum <- function(RR) {
 #' @param bands list in the form list(LF=c(0.00, .04)) etc.
 #' @return list with bands names as names and power in bands as the values
 calculate_frequency_bands <- function(spectrum, bands = frequency_bands) {
+  if (is.null(spectrum)) {
+    result <- rep(NA, length(bands)+1)
+    names(result) <- c(names(bands), "TP")
+    return(result)
+  }
   power_in_bands <- lapply(bands, function(band) {
     sum(spectrum$power[spectrum$frequency >= band[1] & spectrum$frequency <= band[2]])
   })
