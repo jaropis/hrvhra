@@ -11,6 +11,7 @@ frequency_bands <- list(VLF = c(0.00, .04), LF = c(0.04, 0.15), HF = c(0.15, 0.4
 #' @param RR RR object
 #' @return list with power and frequency
 lomb_spectrum <- function(RR) {
+  browser()
   x_ts <- data.frame(sampling = cumsum(RR$RR) / 1000, # to get the results in Hz on x and ms^2 on y
                      samples = RR$RR)
   if (sum(RR$flags != 0)) {
