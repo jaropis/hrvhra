@@ -11,6 +11,7 @@ frequency_bands <- list(VLF = c(0.00, .04), LF = c(0.04, 0.15), HF = c(0.15, 0.4
 #' @param RR RR object
 #' @return list with power and frequency
 lomb_spectrum <- function(RR) {
+  RR <- shave_nonsinus(RR)
   x_ts <- data.frame(sampling = cumsum(RR$RR) / 1000, # to get the results in Hz on x and ms^2 on y
                      samples = RR$RR)
   if (sum(RR$flags) != 0) {
@@ -55,4 +56,18 @@ calculate_RR_spectrum <- function(RR, bands = frequency_bands) {
   lomb_spectrum(RR) %>%
     calculate_frequency_bands(bands) %>%
     unlist()
+}
+
+#' Function removing artefacts from beginning and end of the recording
+#' @param RR RR object
+shave_nonsinus <- function(RR) {
+  # shaving top
+  while (RR$flags[1] != 0) {
+    RR <- RR[2:nrow(RR), ]
+  }
+  # shaving bottom
+  while (RR$flags[nrow(RR)] != 0) {
+    RR <- RR[1:(nrow(RR) - 1), ]
+  }
+  RR
 }
