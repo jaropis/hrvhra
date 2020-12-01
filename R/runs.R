@@ -23,10 +23,12 @@ split_on_annot <- function(rr, annotations, throwError = FALSE) {
   if (annotations[length(annotations)] == 0)
     rr_segments <- c(rr_segments, list(rr[start:length(rr)]))
   # what happens for bad RR ts
-  if (length(rr_segments) == 0 && !throwError) {
-    return(NULL)
-  } else {
-    stop("no segments of continuous RR intervals in this dataset")
+  if (length(rr_segments) == 0) {
+    if (!throwError) {
+      return(NULL)
+    } else {
+      stop("no segments of continuous RR intervals in this dataset")
+    } 
   }
   return(rr_segments)
 }
