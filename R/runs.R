@@ -6,8 +6,9 @@
 #'
 #' @param rr vector containing RR intervals time series
 #' @param annotations vector containing annotations for the RR intervals
+#' @param throwError whether error should return NULL or throw an error
 #' @return a list of vectors corresponding to disjoint RR time-series of sinus origin
-split_on_annot <- function(rr, annotations) {
+split_on_annot <- function(rr, annotations, throwError = FALSE) {
   bad_idx <- which(annotations != 0)
   if (length(bad_idx) == 0)
     return(list(rr))
@@ -21,8 +22,12 @@ split_on_annot <- function(rr, annotations) {
   }
   if (annotations[length(annotations)] == 0)
     rr_segments <- c(rr_segments, list(rr[start:length(rr)]))
-  assert_that(length(rr_segments) > 0,
-              msg = "no segments of continuous RR intervals in this dataset")
+  # what happens for bad RR ts
+  if (length(rr_segments) == 0 && !throwError) {
+    return(NULL)
+  } else {
+    stop("no segments of continuous RR intervals in this dataset")
+  }
   return(rr_segments)
 }
 
@@ -78,8 +83,11 @@ get_runs <- function(rr,
 #' @inheritParams split_on_annot
 #' @return a two-element list, the first element is a list of runs, the second is a vector holding the directions of the runs
 
-split_all_into_runs <- function(rr, annotations) {
-  list_of_separate_segments <- split_on_annot(rr, annotations)
+split_all_into_runs <- function(rr, annotations, throwError = FALSE) {
+  list_of_separate_segments <- split_on_annot(rr, annotations, throwError)
+  if (is.null(list_of_separate_segments)) {
+    return(NULL)
+  }
   # initialize the list keeping separate runs in consecutive segments
   separate_runs_and_directions <-
     list(all_runs = list(), directions = c())
@@ -102,10 +110,11 @@ split_all_into_runs <- function(rr, annotations) {
 #' Function to get runs sequence in an RR intervals time series, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")
 #' @param rr vector containing RR intervals time series
 #' @param annotations vector containing annotations for the RR intervals
+#' @param throwError whether error should return NULL or throw an error
 #' @return vector of runs sequence, like c("DR3", "AR4", "N1", "AR3", "DR2")
 #' @export
-get_runs_sequence <- function(rr, annotations) {
-  runs <- split_all_into_runs(rr, annotations)
+get_runs_sequence <- function(rr, annotations, throwError = FALSE) {
+  runs <- split_all_into_runs(rr, annotations, throwError)
   paste0(str_replace(runs[[2]], "Up", "AR") %>%
            str_replace("Down", "DR") %>%
            str_replace("no_Change", "N"),
@@ -134,7 +143,7 @@ get_runs_sequence <- function(rr, annotations) {
 #'
 #' @references J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and acceleration runs, Physiological measurement 32 (8), (2011)
 
-countruns <- function(rr, annotations=c()) {
+countruns <- function(rr, annotations=c(), throwError = FALSE) {
   # checking if RR vector the correct type and is long enough to proceed
   assert_that(is.vector(rr), is.numeric(rr), noNA(rr),
               msg = "the rr vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
@@ -150,7 +159,16 @@ countruns <- function(rr, annotations=c()) {
               msg = "the annotations vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
   assert_that(length(annotations) == length(rr), msg = "annotations and RR vectors need to be of the same length")
 
-  splitrr <- split_all_into_runs(rr, annotations)
+  splitrr <- split_all_into_runs(rr, annotations, throwError)
+  
+  # this below happens if there are only non-sinus beats
+  if (is.null(splitrr)) {
+    return(list(
+      direction_up = c(up1 = -1),
+      direction_down = c(down1 = -1),
+      no_change = c(N1 = -1)
+    ))
+  }
   directions <- splitrr$directions
   up_runs <- splitrr$all_runs[directions == "Up"]
   down_runs <- splitrr$all_runs[directions == "Down"]
@@ -201,7 +219,6 @@ countruns <- function(rr, annotations=c()) {
     names(zero_change_runs_accumulator) <-
       paste(rep("no_change", length(zero_change_runs_accumulator)),
             seq_len(length(zero_change_runs_accumulator)), sep = "")
-
   return(
     list(
       direction_up = up_runs_accumulator,
@@ -277,6 +294,13 @@ bind_runs_as_table <- function(results, rownames = NULL) {
   # and finally replacing NA's by zeros, so that it is easier to process
   # (in fact, count 0 is obviously no NA, as 0 is a valid number of runs)
   final_results[is.na(final_results)] <- as.integer(0)
+  
+  # if a row has a -1 (indicative of a failed calculation) then all values are replaced with NAs
+  for (idx in seq(nrow(final_results))) {
+    if (-1 %in% final_results[idx, ]) {
+      final_results[idx, ] <- NA
+    }
+  }
   final_results
 }
 
