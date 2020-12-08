@@ -4,12 +4,14 @@
 \alias{split_all_into_runs}
 \title{Splitting the RR time series into monotonic runs and assigning directions}
 \usage{
-split_all_into_runs(rr, annotations)
+split_all_into_runs(rr, annotations, throwError = FALSE)
 }
 \arguments{
 \item{rr}{vector containing RR intervals time series}
 
 \item{annotations}{vector containing annotations for the RR intervals}
+
+\item{throwError}{whether error should return NULL or throw an error}
 }
 \value{
 a two-element list, the first element is a list of runs, the second is a vector holding the directions of the runs

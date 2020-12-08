@@ -4,12 +4,14 @@
 \alias{split_on_annot}
 \title{Spliting the rr time series into disjoint subseries, breaking on annotations}
 \usage{
-split_on_annot(rr, annotations)
+split_on_annot(rr, annotations, throwError = FALSE)
 }
 \arguments{
 \item{rr}{vector containing RR intervals time series}
 
 \item{annotations}{vector containing annotations for the RR intervals}
+
+\item{throwError}{whether error should return NULL or throw an error}
 }
 \value{
 a list of vectors corresponding to disjoint RR time-series of sinus origin
