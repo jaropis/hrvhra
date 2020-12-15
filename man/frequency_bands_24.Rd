@@ -4,7 +4,9 @@
 \name{frequency_bands_24}
 \alias{frequency_bands_24}
 \title{Frequency bands 24 h}
-\format{An object of class \code{list} of length 4.}
+\format{
+An object of class \code{list} of length 4.
+}
 \usage{
 frequency_bands_24
 }
