@@ -5,12 +5,16 @@
 \title{Function dividing the dataframe into SLIDING windows of `window` length
 test with lapply(ala, function(elem) nrow(elem$RR))}
 \usage{
-index_based_slide(RR, window = 300)
+index_based_slide(RR, window = 300, time_unit = NULL, tolerance = NULL)
 }
 \arguments{
 \item{RR}{RR data}
 
 \item{window}{the length of the window in beats (samples)}
+
+\item{time_unit}{unused, dud to simplify HRAExplorer}
+
+\item{tolerance}{unused, dud to simplify HRAExplorer}
 }
 \description{
 Function dividing the dataframe into SLIDING windows of `window` length

@@ -70,8 +70,10 @@ time_based_slide <- function(RR, window = 5, now = "2020-09-05 12:11:00", time_u
 #' test with lapply(ala, function(elem) nrow(elem$RR))
 #' @param RR RR data
 #' @param window the length of the window in beats (samples)
+#' @param tolerance unused, dud to simplify HRAExplorer
+#' @param time_unit unused, dud to simplify HRAExplorer
 #' @export
-index_based_slide <- function(RR, window = 300) {
+index_based_slide <- function(RR, window = 300, time_unit = NULL, tolerance = NULL) {
   slide(RR, ~.x, .before = window - 1, .complete= TRUE) %>%
     Filter(function(elem) !is.null(elem), .)
 }
@@ -128,8 +130,9 @@ remove_zeros <- function(resulting_windows) {
 #' @param window the length of the window in beats
 #' @param cut_end if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording
 #' @param tolerance what departure from the window length do we tolerate
+#' @param time_unit unused, dud to simplify HRAExplorer
 #' @export
-index_based_jump <- function(RR, window = 300, cut_end = FALSE, tolerance = 0.1) {
+index_based_jump <- function(RR, window = 300, cut_end = FALSE, tolerance = 0.1, time_unit = NULL) {
   if (!cut_end) {
     N <- length(RR$RR)
     window_multiples <- floor(N / window)

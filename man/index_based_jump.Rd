@@ -4,7 +4,13 @@
 \alias{index_based_jump}
 \title{Function dividing the data.frame into JUMPING windows of `window` length based on index}
 \usage{
-index_based_jump(RR, window = 300, cut_end = FALSE, tolerance = 0.1)
+index_based_jump(
+  RR,
+  window = 300,
+  cut_end = FALSE,
+  tolerance = 0.1,
+  time_unit = NULL
+)
 }
 \arguments{
 \item{RR}{RR data}
@@ -14,6 +20,8 @@ index_based_jump(RR, window = 300, cut_end = FALSE, tolerance = 0.1)
 \item{cut_end}{if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording}
 
 \item{tolerance}{what departure from the window length do we tolerate}
+
+\item{time_unit}{unused, dud to simplify HRAExplorer}
 }
 \description{
 Function dividing the data.frame into JUMPING windows of `window` length based on index
