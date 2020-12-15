@@ -86,7 +86,7 @@ index_based_slide <- function(RR, window = 300) {
 #' @export
 time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 12:11:00", tolerance = 0.1, time_unit = "minute") {
     stopifnot(time_unit %in% c("second", "minute"))
-    template_length <- 'if'(time_unit == "minute", window * 60 * 1000, window)
+    template_length <- 'if'(time_unit == "minute", window * 60 * 1000, window * 1000)
     RR_time_track <- add_time_track(RR, now, reverse = ifelse(cut_end, FALSE, TRUE))
     # TODO check what cut end means, because it is all messed up here
     resulting_windows <- slide_period(RR_time_track,
