@@ -5,12 +5,19 @@
 \title{Function dividing the dataframe into SLIDING windows of `window` length
 test with lapply(ala, function(elem) sum(elem$RR) / 60 / 1000)}
 \usage{
-time_based_slide(RR, window = 5, now = "2020-09-05 12:11:00")
+time_based_slide(
+  RR,
+  window = 5,
+  now = "2020-09-05 12:11:00",
+  time_unit = "minute"
+)
 }
 \arguments{
 \item{RR}{RR data}
 
 \item{window}{the length of the window in minutes}
+
+\item{time_unit}{the unit of time in which the window is expressed - can be either minute or second}
 }
 \description{
 Function dividing the dataframe into SLIDING windows of `window` length

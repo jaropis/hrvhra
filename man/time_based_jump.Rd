@@ -10,7 +10,8 @@ time_based_jump(
   window = 5,
   cut_end = FALSE,
   now = "2020-09-05 12:11:00",
-  tolerance = 0.1
+  tolerance = 0.1,
+  time_unit = "minute"
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ time_based_jump(
 \item{now}{when does the recording begin? default is "2020-09-05 12:11:00"}
 
 \item{tolerance}{what departure from the window length do we tolerate}
+
+\item{time_unit}{the unit of time in which the window is expressed - can be either minute or second}
 }
 \description{
 Function dividing the dataframe into JUMPING windows of `window` length based on time

@@ -4,12 +4,14 @@
 \alias{get_runs_sequence}
 \title{Function to get runs sequence in an RR intervals time series, e.g. c("DR3", "AR4", "N1", "AR3", "DR2")}
 \usage{
-get_runs_sequence(rr, annotations)
+get_runs_sequence(rr, annotations, throwError = FALSE)
 }
 \arguments{
 \item{rr}{vector containing RR intervals time series}
 
 \item{annotations}{vector containing annotations for the RR intervals}
+
+\item{throwError}{whether error should return NULL or throw an error}
 }
 \value{
 vector of runs sequence, like c("DR3", "AR4", "N1", "AR3", "DR2")

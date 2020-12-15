@@ -53,14 +53,16 @@ reverse_time_track <- function(RR_time_track, cut_end = FALSE) {
 #' test with lapply(ala, function(elem) sum(elem$RR) / 60 / 1000)
 #' @param RR RR data
 #' @param window the length of the window in minutes
+#' @param time_unit the unit of time in which the window is expressed - can be either minute or second
 #' @export
-time_based_slide <- function(RR, window = 5, now = "2020-09-05 12:11:00") {
+time_based_slide <- function(RR, window = 5, now = "2020-09-05 12:11:00", time_unit = "minute") {
+  stopifnot(time_unit %in% c("second", "minute"))
   RR_time_track <- add_time_track(RR, now)
   slide_index(RR_time_track,
               RR_time_track$time_track,
               ~.x,
               .complete = TRUE,
-              .before = minutes(window)) %>%
+              .before = 'if'(time_unit == "minute", minutes(window), seconds(window))) %>%
     Filter(function(elem) !is.null(elem), .)
 }
 
@@ -80,13 +82,15 @@ index_based_slide <- function(RR, window = 300) {
 #' @param cut_end if the window does not fit the entire recording perfectly, should I cut_end = TRUE or the beginning (FALSE) of the recording
 #' @param now when does the recording begin? default is "2020-09-05 12:11:00"
 #' @param tolerance what departure from the window length do we tolerate
+#' @param time_unit the unit of time in which the window is expressed - can be either minute or second
 #' @export
-time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 12:11:00", tolerance = 0.1) {
+time_based_jump <- function(RR, window = 5, cut_end = FALSE, now = "2020-09-05 12:11:00", tolerance = 0.1, time_unit = "minute") {
+    stopifnot(time_unit %in% c("second", "minute"))
     RR_time_track <- add_time_track(RR, now, reverse = ifelse(cut_end, FALSE, TRUE))
     # TODO check what cut end means, because it is all messed up here
     resulting_windows <- slide_period(RR_time_track,
                                       RR_time_track$time_track,
-                                      "minute", .every = window,
+                                      time_unit, .every = window,
                                       ~.x,
                                       .complete = TRUE,
                                       .origin = RR_time_track$time_track[[1]]) %>%
