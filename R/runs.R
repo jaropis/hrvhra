@@ -149,7 +149,14 @@ countruns <- function(rr, annotations=c(), throwError = FALSE) {
   # checking if RR vector the correct type and is long enough to proceed
   assert_that(is.vector(rr), is.numeric(rr), noNA(rr),
               msg = "the rr vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
-  assert_that(length(rr) > 2, msg = "RR vector too short to define a 'run'")
+  
+  if (length(rr) <= 2) {
+    if (!throwError) {
+      return(NULL)
+    } else {
+      stop("RR vector too short to define a 'run'")
+    } 
+  }
 
   if (length(annotations) == 0)
     annotations <- rr * 0
