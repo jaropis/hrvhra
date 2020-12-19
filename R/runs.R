@@ -249,7 +249,7 @@ countruns <- function(rr, annotations=c(), throwError = FALSE) {
 #' @export
 bind_runs_as_table <- function(results, rownames = NULL) {
   if (length(results) == 0) {
-    return(data.frame(file = rownames, DR1=NA, AR1=NA, N1=NA, DR_MAX = NA, AR_MAX = NA, N_MAX  = NA))
+    return(data.frame(file = rownames, DR1=NA_real_, AR1=NA_real_, N1=NA_real_, DR_MAX = NA_real_, AR_MAX = NA_real_, N_MAX  = NA_real_))
   }
   len_up <- 0
   len_down <- 0
