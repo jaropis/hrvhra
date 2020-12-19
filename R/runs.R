@@ -149,7 +149,7 @@ countruns <- function(rr, annotations=c(), throwError = FALSE) {
   # checking if RR vector the correct type and is long enough to proceed
   assert_that(is.vector(rr), is.numeric(rr), noNA(rr),
               msg = "the rr vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
-  
+  "RR vector too short to define a 'run'"
   if (length(rr) <= 2) {
     if (!throwError) {
       return(NULL)
@@ -248,6 +248,9 @@ countruns <- function(rr, annotations=c(), throwError = FALSE) {
 #' @return data.table
 #' @export
 bind_runs_as_table <- function(results, rownames = NULL) {
+  if (length(results) == 0) {
+    return(data.frame(file = rownames, DR1=NA, AR1=NA, N1=NA, DR_MAX = NA, AR_MAX = NA, N_MAX  = NA))
+  }
   len_up <- 0
   len_down <- 0
   len_no_change <- 0
