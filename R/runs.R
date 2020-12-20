@@ -152,7 +152,11 @@ countruns <- function(rr, annotations=c(), throwError = FALSE) {
   "RR vector too short to define a 'run'"
   if (length(rr) <= 2) {
     if (!throwError) {
-      return(NULL)
+      return(list(
+        direction_up = c(up1 = -1),
+        direction_down = c(down1 = -1),
+        no_change = c(N1 = -1)
+      ))
     } else {
       stop("RR vector too short to define a 'run'")
     } 
@@ -248,9 +252,6 @@ countruns <- function(rr, annotations=c(), throwError = FALSE) {
 #' @return data.table
 #' @export
 bind_runs_as_table <- function(results, rownames = NULL) {
-  if (length(results) == 0) {
-    return(data.frame(file = rownames, DR1=NA_real_, AR1=NA_real_, N1=NA_real_, DR_MAX = NA_real_, AR_MAX = NA_real_, N_MAX  = NA_real_))
-  }
   len_up <- 0
   len_down <- 0
   len_no_change <- 0
