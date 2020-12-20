@@ -219,7 +219,7 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 hrvhra <- function(rr, annotations, throwError = FALSE) {
   pp <- preparepp(rr, annotations)
   if (is.null(pp)) {
-    return (c("SDNN" = NA, "SD1" = NA, "SD2" = NA, "SD1I" = NA, "MEAN_RR" = NA, "SDNNd" = NA, "SDNNa" = NA, "SD1d" = NA, "SD1a" = NA, "SD2d" = NA, "SD2a" = NA))
+    return (c("SDNN" = NA, "SD1" = NA, "SD2" = NA, "SD1I" = NA, "MEAN_RR" = NA, "SDNNd" = NA, "SDNNa" = NA, "SD1d" = NA, "SD1a" = NA, "SD2d" = NA, "SD2a" = NA, "PI" = NA))
   }
   rr_i <- pp[, "rr_i"]
   rr_ii <- pp[, "rr_ii"]
