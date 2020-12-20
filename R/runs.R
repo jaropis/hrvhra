@@ -311,7 +311,7 @@ bind_runs_as_table <- function(results, rownames = NULL) {
   # if a row has a -1 (indicative of a failed calculation) then all values are replaced with NAs
   for (idx in seq(nrow(final_results))) {
     if (-1 %in% final_results[idx, ]) {
-      final_results[idx, final_results[idx, ] == -1] <- NA
+      final_results[idx, 2:ncol(final_results)] <- NA # saving filename
     }
   }
   final_results
