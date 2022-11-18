@@ -73,4 +73,4 @@ J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and ac
 
 Acknowledgements
 -------------
-This project currently funded by the grant "Rytm dobowy asymetrii rytmu serca u osób zdrowych. Związki asymetrii rytmu serca z wiekiem, wskaźnikami antropometrycznymi, aktywnością fizyczną oraz płcią
+This project is currently funded by the grant "Rytm dobowy asymetrii rytmu serca u osób zdrowych. Związki asymetrii rytmu serca z wiekiem, wskaźnikami antropometrycznymi, aktywnością fizyczną oraz płcią"
