@@ -4,10 +4,10 @@
 \alias{pnnX}
 \title{Function calculating pnnX}
 \usage{
-pnnX(rr, annotations, threshold)
+pnnX(pp, annotations, threshold)
 }
 \arguments{
-\item{rr}{rr intervals time series}
+\item{pp}{Poincare plot object}
 
 \item{annotations}{annotations}
 }

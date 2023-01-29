@@ -329,6 +329,6 @@ describerr <- function(rr, annotations) {
 #' @param annotations annotations
 #' @export
 pnnX <- function(pp, annotations, threshold) {
-  drr = pp$r_ii - pp$r_i
+  drr = pp[, 2] - pp[, 1]
   return(100 * sum(abs(drr) >= threshold) / length(pp$rr_i))
 }

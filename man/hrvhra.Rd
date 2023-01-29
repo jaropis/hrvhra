@@ -4,7 +4,7 @@
 \alias{hrvhra}
 \title{HRV descriptors}
 \usage{
-hrvhra(rr, annotations, throwError = FALSE)
+hrvhra(rr, annotations, pnnX_vec = c(), throwError = FALSE)
 }
 \arguments{
 \item{rr}{vector containing RR intervals time series}
@@ -12,6 +12,8 @@ hrvhra(rr, annotations, throwError = FALSE)
 \item{annotations}{vector containing annotations for the RR intervals}
 
 \item{throwError}{whether to throw error or return a vector with NAs}
+
+\item{pnnX}{vector with values for calculating pnnX parameters}
 }
 \value{
 an 1 x 10 vector containing SDNN, SD1, SD2, SD1I, SDNNd, SDNNa, SD1d, SD1a, SD2d, SD2a  descriptors
