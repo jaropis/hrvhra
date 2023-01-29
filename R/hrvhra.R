@@ -278,7 +278,7 @@ hrvhra <- function(rr, annotations, pnnX_vec = c(), throwError = FALSE) {
     for (x in pnnX_vec) {
       results_pnnX <- c(results_pnnX, pnnX(pp, x))
     }
-    results_pnnX_names <- paste0("pnn", pnnX_vec * 100)
+    results_pnnX_names <- paste0("pnn", pnnX_vec)
     names(results_pnnX) <- results_pnnX_names
     results_hrv <- c(results_hrv, results_pnnX)
   }
@@ -330,5 +330,5 @@ describerr <- function(rr, annotations) {
 #' @export
 pnnX <- function(pp, threshold) {
   drr = pp[, 2] - pp[, 1]
-  return(100 * sum(abs(drr) >= threshold) / length(pp$rr_i))
+  return(100 * sum(abs(drr) >= threshold) / length(pp[, 1]))
 }
