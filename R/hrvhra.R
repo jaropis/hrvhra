@@ -313,3 +313,13 @@ describerr <- function(rr, annotations) {
   names(statistics) <- c("all", "N", "V", "S", "X", "U", "total_time")
   return(statistics)
 }
+
+#' Function calculating pnnX
+#' @param rr rr intervals time series
+#' @param annotations annotations
+#' @export
+pnnX <- function(rr, annotations, threshold) {
+  pp <- preparepp(rr, annotations)
+  drr = pp$r_ii - pp$r_i
+  return(100 * sum(abs(drr) >= threshold) / length(pp$rr_i))
+}
