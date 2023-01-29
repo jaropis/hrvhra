@@ -24,8 +24,10 @@ lomb_spectrum <- function(RR) {
   if (nrow(x_ts) <2) {
     return (NULL)
   }
+  
   spectrum <- lomb::lsp(x_ts,
                         type = "frequency",
+                        normalize = "press",
                         plot = FALSE)
   # normalizing power spectrum so that we have correspondence between time domain and frequency domain
   power <- spectrum$power * 1/length(spectrum$scanned)  * var(RR$RR)
