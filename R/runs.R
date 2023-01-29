@@ -327,3 +327,38 @@ get_longest_run <- function(runs_results, type) {
     strsplit(type)
   as.numeric(number[[1]][2])
 }
+
+#' Function extracting runs entropy
+#' @param nb_decelerations vector with the numbers of respective decelerations
+#' @param nb_decelerations vector with the numbers of respective acceleratons
+#' @param nb_noChanges vector with the numbers of respective neutral_runs
+#' @return vector of three folats
+#'
+entropies <- function(nb_decelerations, nb_accelerations, nb_noChanges){
+  individual_entropy <- function(counts, n){
+    full <- 0
+    for (i in seq_along(counts)){
+      if (counts[i] > 0){
+        partial <- - i * counts[i]/n * log(i * counts[i]/n)
+      }
+      full <- full + partial
+    }
+    return(full)
+  }
+  n <- sum(c(nb_decelerations * 1:length(nb_decelerations),
+             nb_accelerations * 1:length(nb_accelerations), 
+             nb_noChanges * 1:length(nb_noChanges)))
+  HDR <- individual_entropy(nb_decelerations, n)
+  HAR <- individual_entropy(nb_accelerations, n)
+  HNO <- individual_entropy(nb_noChanges, n)
+  
+  n_2 <- sum(c(nb_decelerations,
+               nb_accelerations, 
+               nb_noChanges))
+  HDR_2 <- individual_entropy(nb_decelerations, n_2)
+  HAR_2 <- individual_entropy(nb_accelerations, n_2)
+  HNO_2 <- individual_entropy(nb_noChanges, n_2)
+  result <- c(HDR, HAR, HNO, HRD2, HAR2, HNO2)
+  names(result) <- c("HDR", "HAR", "HNO", "HDR2", "HAR2", "HNO2")
+  return(result)
+}
