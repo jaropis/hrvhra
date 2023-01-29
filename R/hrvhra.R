@@ -207,6 +207,7 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #' This function returns the basic HRV descriptors related to the Poincare plot.
 #'
 #' @inheritParams preparepp
+#' @param pnnX vector with values for calculating pnnX parameters
 #' @return an 1 x 10 vector containing SDNN, SD1, SD2, SD1I, SDNNd, SDNNa, SD1d, SD1a, SD2d, SD2a  descriptors
 #' @importFrom stats var
 #' @export
@@ -216,7 +217,7 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #'
 #' @references J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 
-hrvhra <- function(rr, annotations, throwError = FALSE) {
+hrvhra <- function(rr, annotations, pnnX_vec = c(), throwError = FALSE) {
   pp <- preparepp(rr, annotations)
   if (is.null(pp)) {
     return (c("SDNN" = NA, "SD1" = NA, "SD2" = NA, "SD1I" = NA, "MEAN_RR" = NA, "SDNNd" = NA, "SDNNa" = NA, "SD1d" = NA, "SD1a" = NA, "SD2d" = NA, "SD2a" = NA, "PI" = NA))
@@ -272,6 +273,15 @@ hrvhra <- function(rr, annotations, throwError = FALSE) {
     c("SDNNd", "SDNNa", "SD1d", "SD1a", "SD2d", "SD2a")
   porta <- sum(rr_ii > rr_i) / (length(rr_i))
   names(porta) <- "PI"
+  if (length(pnnX_vec) > 0) {
+    results_pnnX <- c()
+    for (x in pnnX_vec) {
+      results_pnnX <- c(results_pnnX, pnnX(pp, x))
+    }
+    results_pnnX_names <- paste0("pnn", pnnX_vec * 100)
+    names(results_pnnX) <- results_pnnX_names
+    results_hrv <- c(results_hrv, results_pnnX)
+  }
   results <- c(results_hrv, results_hra, porta)
 
   return(results)
@@ -315,11 +325,10 @@ describerr <- function(rr, annotations) {
 }
 
 #' Function calculating pnnX
-#' @param rr rr intervals time series
+#' @param pp Poincare plot object
 #' @param annotations annotations
 #' @export
-pnnX <- function(rr, annotations, threshold) {
-  pp <- preparepp(rr, annotations)
+pnnX <- function(pp, annotations, threshold) {
   drr = pp$r_ii - pp$r_i
   return(100 * sum(abs(drr) >= threshold) / length(pp$rr_i))
 }
