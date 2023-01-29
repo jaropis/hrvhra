@@ -326,9 +326,9 @@ describerr <- function(rr, annotations) {
 
 #' Function calculating pnnX
 #' @param pp Poincare plot object
-#' @param annotations annotations
+#' @param threshold threshold for calculating pnnX
 #' @export
-pnnX <- function(pp, annotations, threshold) {
+pnnX <- function(pp, threshold) {
   drr = pp[, 2] - pp[, 1]
   return(100 * sum(abs(drr) >= threshold) / length(pp$rr_i))
 }

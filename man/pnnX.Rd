@@ -4,12 +4,12 @@
 \alias{pnnX}
 \title{Function calculating pnnX}
 \usage{
-pnnX(pp, annotations, threshold)
+pnnX(pp, threshold)
 }
 \arguments{
 \item{pp}{Poincare plot object}
 
-\item{annotations}{annotations}
+\item{threshold}{threshold for calculating pnnX}
 }
 \description{
 Function calculating pnnX
