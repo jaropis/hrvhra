@@ -369,7 +369,7 @@ entropies <- function(nb_decelerations, nb_accelerations, nb_noChanges){
   HDR2 <- individual_entropy_2(nb_decelerations, n_2)
   HAR2 <- individual_entropy_2(nb_accelerations, n_2)
   HNO2 <- individual_entropy_2(nb_noChanges, n_2)
-  result <- c(HDR, HAR, HNO, HRD2, HAR2, HNO2)
+  result <- c(HDR, HAR, HNO, HDR2, HAR2, HNO2)
   names(result) <- c("HDR", "HAR", "HNO", "HDR2", "HAR2", "HNO2")
   return(result)
 }
