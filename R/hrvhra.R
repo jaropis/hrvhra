@@ -327,8 +327,33 @@ describerr <- function(rr, annotations) {
 #' Function calculating pnnX
 #' @param pp Poincare plot object
 #' @param threshold threshold for calculating pnnX
+#' @param asym whether to calculate the asymmetric pnnX
+#' @param dec whether in asymmetric pnnX we count decelerations to be bigger, false means accelerations are expected to be smaller
 #' @export
-pnnX <- function(pp, threshold) {
+pnnX <- function(pp, threshold, asym = FALSE, dec = FALSE) {
   drr = pp[, 2] - pp[, 1]
+  if (asym && dec) {
+    return(100 * sum(drr >= threshold) / length(pp[, 1]))
+  }
+  if (asym && !dec) {
+    return(100 * sum(drr <= (-1) * threshold) / length(pp[, 1]))
+  }
+  return(100 * sum(abs(drr) >= threshold) / length(pp[, 1]))
+}
+
+#' Function calculating pnn%
+#' @param pp Poincare plot object
+#' @param threshold threshold for calculating pnnX
+#' @param asym whether to calculate the asymmetric pnnX
+#' @param dec whether in asymmetric pnnX we count decelerations to be bigger, false means accelerations are expected to be smaller
+#' @export
+pnn_perc <- function(pp, threshold, asym = FALSE) {
+  drr = (pp[, 2] - pp[, 1]) / p[, 1]
+  if (asym && dec) {
+    return(100 * sum(drr >= threshold) / length(pp[, 1]))
+  }
+  if (asym && !dec) {
+    return(100 * sum(drr <= (-1) * threshold) / length(pp[, 1]))
+  }
   return(100 * sum(abs(drr) >= threshold) / length(pp[, 1]))
 }
