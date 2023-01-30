@@ -208,6 +208,9 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #'
 #' @inheritParams preparepp
 #' @param pnnX vector with values for calculating pnnX parameters
+#' @param pnn_perc vector with values for calculating pnnX parameters
+#' @param pnnX_asym whether to use the asymmetric case
+#' @param pnn_perc_asym whether to use the asymmetric case
 #' @return an 1 x 10 vector containing SDNN, SD1, SD2, SD1I, SDNNd, SDNNa, SD1d, SD1a, SD2d, SD2a  descriptors
 #' @importFrom stats var
 #' @export
@@ -217,7 +220,7 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #'
 #' @references J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 
-hrvhra <- function(rr, annotations, pnnX_vec = c(), pnn_perc_vec = c(), throwError = FALSE) {
+hrvhra <- function(rr, annotations, pnnX_vec = c(), pnn_perc_vec = c(), pnnX_asym, pnn_perc_asym, casethrowError = FALSE) {
   pp <- preparepp(rr, annotations)
   if (is.null(pp)) {
     return (c("SDNN" = NA, "SD1" = NA, "SD2" = NA, "SD1I" = NA, "MEAN_RR" = NA, "SDNNd" = NA, "SDNNa" = NA, "SD1d" = NA, "SD1a" = NA, "SD2d" = NA, "SD2a" = NA, "PI" = NA))
@@ -276,7 +279,7 @@ hrvhra <- function(rr, annotations, pnnX_vec = c(), pnn_perc_vec = c(), throwErr
   if (length(pnnX_vec) > 0) {
     results_pnnX <- c()
     for (x in pnnX_vec) {
-      results_pnnX <- c(results_pnnX, pnnX(pp, x))
+      results_pnnX <- c(results_pnnX, pnnX(pp, x, pnnX_asym))
     }
     results_pnnX_names <- paste0("pnn", pnnX_vec)
     names(results_pnnX) <- results_pnnX_names
@@ -285,7 +288,7 @@ hrvhra <- function(rr, annotations, pnnX_vec = c(), pnn_perc_vec = c(), throwErr
   if (length(pnn_perc_vec) > 0) {
     results_pnn_perc <- c()
     for (x in pnn_perc_vec) {
-      results_pnn_perc <- c(results_pnn_perc, pnn_perc(pp, x))
+      results_pnn_perc <- c(results_pnn_perc, pnn_perc(pp, x, pnn_perc_asym))
     }
     results_pnn_perc_names <- paste0("pnn", pnn_perc_vec, "%")
     names(results_pnn_perc) <- results_pnn_perc_names
