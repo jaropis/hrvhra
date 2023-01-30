@@ -298,7 +298,7 @@ hrvhra <- function(rr,
   if (length(pnn_perc_vec) > 0) {
     results_pnn_perc <- c()
     results_pnn_perc_asym_acc <- c()
-    results_pnn_perc_asym_acc <- c()
+    results_pnn_perc_asym_dec <- c()
     for (x in pnn_perc_vec) {
       results_pnn_perc <- c(results_pnn_perc, pnn_perc(pp, x, FALSE, FALSE))
       results_pnn_perc_asym_dec <- c(results_pnn_perc_asym_dec, pnn_perc(pp, x, TRUE, TRUE))
