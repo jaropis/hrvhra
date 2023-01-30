@@ -209,10 +209,6 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #' @inheritParams preparepp
 #' @param pnnX vector with values for calculating pnnX parameters
 #' @param pnn_perc vector with values for calculating pnnX parameters
-#' @param pnnX_asym whether to use the asymmetric case
-#' @param pnn_perc_asym whether to use the asymmetric case
-#' @param pnnX_asym_dec should the calculations be decelerations oriented
-#' @param pnn_perc_asym_dec should the calculations be decelerations oriented
 #' @return an 1 x 10 vector containing SDNN, SD1, SD2, SD1I, SDNNd, SDNNa, SD1d, SD1a, SD2d, SD2a  descriptors
 #' @importFrom stats var
 #' @export
@@ -226,10 +222,6 @@ hrvhra <- function(rr,
                    annotations, 
                    pnnX_vec = c(), 
                    pnn_perc_vec = c(), 
-                   pnnX_asym = FALSE, 
-                   pnn_perc_asym = FALSE, 
-                   pnnX_asym_dec = TRUE, 
-                   pnn_perc_asym_dec = TRUE, 
                    casethrowError = FALSE) {
   pp <- preparepp(rr, annotations)
   if (is.null(pp)) {
@@ -288,21 +280,37 @@ hrvhra <- function(rr,
   names(porta) <- "PI"
   if (length(pnnX_vec) > 0) {
     results_pnnX <- c()
+    results_pnnX_asym_dec <- c()
+    results_pnnX_asym_acc <- c()
     for (x in pnnX_vec) {
-      results_pnnX <- c(results_pnnX, pnnX(pp, x, pnnX_asym, pnnX_asym_dec))
+      results_pnnX <- c(results_pnnX, pnnX(pp, x, FALSE, FALSE))
+      results_pnnX_asym_dec <- c(results_pnnX_asym_dec, pnnX(pp, x, TRUE, TRUE))
+      results_pnnX_asym_acc <- c(results_pnnX_asym_acc, pnnX(pp, x, TRUE, FALSE))
     }
     results_pnnX_names <- paste0("pnn", pnnX_vec)
+    results_pnnX_names_dec <- paste0("pnn", pnnX_vec, "_dec")
+    results_pnnX_names_acc <- paste0("pnn", pnnX_vec, "_acc")
     names(results_pnnX) <- results_pnnX_names
+    names(results_pnnX_asym_dec) <- results_pnnX_names_dec
+    names(results_pnnX_asym_acc) <- results_pnnX_names_acc
     results_hrv <- c(results_hrv, results_pnnX)
   }
   if (length(pnn_perc_vec) > 0) {
     results_pnn_perc <- c()
+    results_pnn_perc_asym_acc <- c()
+    results_pnn_perc_asym_acc <- c()
     for (x in pnn_perc_vec) {
-      results_pnn_perc <- c(results_pnn_perc, pnn_perc(pp, x, pnn_perc_asym, pnn_perc_asym))
+      results_pnn_perc <- c(results_pnn_perc, pnn_perc(pp, x, FALSE, FALSE))
+      results_pnn_perc_asym_dec <- c(results_pnn_perc_asym_dec, pnn_perc(pp, x, TRUE, TRUE))
+      results_pnn_perc_asym_acc <- c(results_pnn_perc_asym_acc, pnn_perc(pp, x, TRUE, FALSE))
     }
     results_pnn_perc_names <- paste0("pnn", pnn_perc_vec, "%")
+    results_pnn_perc_names_dec <- paste0("pnn", pnn_perc_vec, "%", "_dec")
+    results_pnn_perc_names_acc <- paste0("pnn", pnn_perc_vec, "%", "_acc")
     names(results_pnn_perc) <- results_pnn_perc_names
-    results_hrv <- c(results_hrv, results_pnn_perc)
+    names(results_pnn_perc_dec) <- results_pnn_perc_names_dec
+    names(results_pnn_perc_acc) <- results_pnn_perc_names_acc
+    results_hrv <- c(results_hrv, results_pnn_perc, results_pnn_perc_names_dec, results_pnn_perc_names_acc)
   }
   results <- c(results_hrv, results_hra, porta)
 
@@ -355,12 +363,12 @@ describerr <- function(rr, annotations) {
 pnnX <- function(pp, threshold, asym = FALSE, dec = TRUE) {
   drr = pp[, 2] - pp[, 1]
   if (asym && dec) {
-    return(100 * sum(drr >= threshold) / length(pp[, 1]))
+    return(100 * sum(drr > threshold) / length(pp[, 1]))
   }
   if (asym && !dec) {
-    return(100 * sum(drr <= (-1) * threshold) / length(pp[, 1]))
+    return(100 * sum(drr < (-1) * threshold) / length(pp[, 1]))
   }
-  return(100 * sum(abs(drr) >= threshold) / length(pp[, 1]))
+  return(100 * sum(abs(drr) > threshold) / length(pp[, 1]))
 }
 
 #' Function calculating pnn%
@@ -373,10 +381,10 @@ pnn_perc <- function(pp, threshold, asym = FALSE, dec = TRUE) {
   threshold <- threshold / 100
   drr = (pp[, 2] - pp[, 1]) / pp[, 1]
   if (asym && dec) {
-    return(100 * sum(drr >= threshold) / length(pp[, 1]))
+    return(100 * sum(drr > threshold) / length(pp[, 1]))
   }
   if (asym && !dec) {
-    return(100 * sum(drr <= (-1) * threshold) / length(pp[, 1]))
+    return(100 * sum(drr < (-1) * threshold) / length(pp[, 1]))
   }
-  return(100 * sum(abs(drr) >= threshold) / length(pp[, 1]))
+  return(100 * sum(abs(drr) > threshold) / length(pp[, 1]))
 }

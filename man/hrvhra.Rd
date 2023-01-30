@@ -9,10 +9,6 @@ hrvhra(
   annotations,
   pnnX_vec = c(),
   pnn_perc_vec = c(),
-  pnnX_asym = FALSE,
-  pnn_perc_asym = FALSE,
-  pnnX_asym_dec = TRUE,
-  pnn_perc_asym_dec = TRUE,
   casethrowError = FALSE
 )
 }
@@ -20,14 +16,6 @@ hrvhra(
 \item{rr}{vector containing RR intervals time series}
 
 \item{annotations}{vector containing annotations for the RR intervals}
-
-\item{pnnX_asym}{whether to use the asymmetric case}
-
-\item{pnn_perc_asym}{whether to use the asymmetric case}
-
-\item{pnnX_asym_dec}{should the calculations be decelerations oriented}
-
-\item{pnn_perc_asym_dec}{should the calculations be decelerations oriented}
 
 \item{pnnX}{vector with values for calculating pnnX parameters}
 
