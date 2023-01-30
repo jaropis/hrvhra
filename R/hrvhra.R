@@ -293,7 +293,7 @@ hrvhra <- function(rr,
     names(results_pnnX) <- results_pnnX_names
     names(results_pnnX_asym_dec) <- results_pnnX_names_dec
     names(results_pnnX_asym_acc) <- results_pnnX_names_acc
-    results_hrv <- c(results_hrv, results_pnnX)
+    results_hrv <- c(results_hrv, results_pnnX, results_pnnX_asym_dec, results_pnnX_asym_acc)
   }
   if (length(pnn_perc_vec) > 0) {
     results_pnn_perc <- c()
@@ -308,9 +308,9 @@ hrvhra <- function(rr,
     results_pnn_perc_names_dec <- paste0("pnn", pnn_perc_vec, "%", "_dec")
     results_pnn_perc_names_acc <- paste0("pnn", pnn_perc_vec, "%", "_acc")
     names(results_pnn_perc) <- results_pnn_perc_names
-    names(results_pnn_perc_dec) <- results_pnn_perc_names_dec
-    names(results_pnn_perc_acc) <- results_pnn_perc_names_acc
-    results_hrv <- c(results_hrv, results_pnn_perc, results_pnn_perc_names_dec, results_pnn_perc_names_acc)
+    names(results_pnn_perc_asym_dec) <- results_pnn_perc_names_dec
+    names(results_pnn_perc_asym_acc) <- results_pnn_perc_names_acc
+    results_hrv <- c(results_hrv, results_pnn_perc, results_pnn_perc_asym_dec, results_pnn_perc_asym_acc)
   }
   results <- c(results_hrv, results_hra, porta)
 
