@@ -357,6 +357,7 @@ pnnX <- function(pp, threshold, asym = FALSE, dec = FALSE) {
 #' @param dec whether in asymmetric pnnX we count decelerations to be bigger, false means accelerations are expected to be smaller
 #' @export
 pnn_perc <- function(pp, threshold, asym = FALSE) {
+  threshold <- threshold / 100
   drr = (pp[, 2] - pp[, 1]) / pp[, 1]
   if (asym && dec) {
     return(100 * sum(drr >= threshold) / length(pp[, 1]))
