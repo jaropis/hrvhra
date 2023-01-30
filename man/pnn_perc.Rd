@@ -4,7 +4,7 @@
 \alias{pnn_perc}
 \title{Function calculating pnn%}
 \usage{
-pnn_perc(pp, threshold, asym = FALSE)
+pnn_perc(pp, threshold, asym = FALSE, dec = TRUE)
 }
 \arguments{
 \item{pp}{Poincare plot object}

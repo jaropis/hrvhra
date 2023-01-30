@@ -4,7 +4,7 @@
 \alias{pnnX}
 \title{Function calculating pnnX}
 \usage{
-pnnX(pp, threshold, asym = FALSE, dec = FALSE)
+pnnX(pp, threshold, asym = FALSE, dec = TRUE)
 }
 \arguments{
 \item{pp}{Poincare plot object}
