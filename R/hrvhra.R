@@ -217,7 +217,7 @@ draw_pp_plotly <- function(PP, vname = "RR", ...) {
 #'
 #' @references J Piskorski, P Guzik, Geometry of the Poincare plot of RR intervals and its asymmetry in healthy adults, Physiological measurement 28 (3), 287 (2007)
 
-hrvhra <- function(rr, annotations, pnnX_vec = c(), throwError = FALSE) {
+hrvhra <- function(rr, annotations, pnnX_vec = c(), pnn_perc_vec = c(), throwError = FALSE) {
   pp <- preparepp(rr, annotations)
   if (is.null(pp)) {
     return (c("SDNN" = NA, "SD1" = NA, "SD2" = NA, "SD1I" = NA, "MEAN_RR" = NA, "SDNNd" = NA, "SDNNa" = NA, "SD1d" = NA, "SD1a" = NA, "SD2d" = NA, "SD2a" = NA, "PI" = NA))
@@ -281,6 +281,15 @@ hrvhra <- function(rr, annotations, pnnX_vec = c(), throwError = FALSE) {
     results_pnnX_names <- paste0("pnn", pnnX_vec)
     names(results_pnnX) <- results_pnnX_names
     results_hrv <- c(results_hrv, results_pnnX)
+  }
+  if (length(pnn_perc_vec) > 0) {
+    results_pnn_perc <- c()
+    for (x in pnn_perc_vec) {
+      results_pnn_perc <- c(results_pnn_perc, pnn_perc(pp, x))
+    }
+    results_pnn_perc_names <- paste0("pnn", pnn_perc_vec, "%")
+    names(results_pnn_perc) <- results_pnn_perc_names
+    results_hrv <- c(results_hrv, results_pnn_perc)
   }
   results <- c(results_hrv, results_hra, porta)
 
@@ -348,7 +357,7 @@ pnnX <- function(pp, threshold, asym = FALSE, dec = FALSE) {
 #' @param dec whether in asymmetric pnnX we count decelerations to be bigger, false means accelerations are expected to be smaller
 #' @export
 pnn_perc <- function(pp, threshold, asym = FALSE) {
-  drr = (pp[, 2] - pp[, 1]) / p[, 1]
+  drr = (pp[, 2] - pp[, 1]) / pp[, 1]
   if (asym && dec) {
     return(100 * sum(drr >= threshold) / length(pp[, 1]))
   }
