@@ -335,9 +335,10 @@ get_longest_run <- function(runs_results, type) {
 #' @export
 #' @return vector of three folats
 #'
-entropies <- function(nb_decelerations, nb_accelerations, nb_noChanges){
+entropies <- function(nb_decelerations, nb_accelerations, nb_noChanges) {
   individual_entropy <- function(counts, n){
     full <- 0
+    partial <- 0
     for (i in seq_along(counts)){
       if (counts[i] > 0){
         partial <- - i * counts[i]/n * log(i * counts[i]/n)
@@ -348,6 +349,7 @@ entropies <- function(nb_decelerations, nb_accelerations, nb_noChanges){
   }
   individual_entropy_2 <- function(counts, n){
     full <- 0
+    partial <- 0
     for (i in seq_along(counts)){
       if (counts[i] > 0){
         partial <- - counts[i]/n * log(counts[i]/n)
