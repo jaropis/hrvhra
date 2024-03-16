@@ -326,8 +326,6 @@ hrvhra <- function(rr,
 #' @param rr rr intervals
 #' @return an 1 x 6 vector containing the number of all beats (all), sinus beats (N), ventricular beats (V), supraventricular beats (S), artifacts (X) and unidentifed beats (U)
 #' @export
-#'
-#' @examples
 
 describerr <- function(rr, annotations) {
   assert_that(is.vector(annotations),
