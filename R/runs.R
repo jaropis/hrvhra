@@ -145,99 +145,127 @@ get_runs_sequence <- function(rr, annotations, throwError = FALSE) {
 #'
 #' @references J Piskorski, P Guzik, The structure of heart rate asymmetry: deceleration and acceleration runs, Physiological measurement 32 (8), (2011)
 
-countruns <- function(rr, annotations=c(), throwError = FALSE) {
-  # checking if RR vector the correct type and is long enough to proceed
-  assert_that(is.vector(rr), is.numeric(rr), noNA(rr),
-              msg = "the rr vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
-  "RR vector too short to define a 'run'"
-  if (length(rr) <= 2) {
-    if (!throwError) {
-      return(list(
-        direction_up = c(up1 = -1),
-        direction_down = c(down1 = -1),
-        no_change = c(N1 = -1)
-      ))
-    } else {
-      stop("RR vector too short to define a 'run'")
-    } 
+countruns <- function(RR, anotacje) {
+  # Helper: replicate Python's sign for vectors
+  sign_vec <- function(x) {
+    ifelse(x > 0, 1, ifelse(x < 0, -1, 0))
   }
-
-  if (length(annotations) == 0)
-    annotations <- rr * 0
-
-  # checking if annotations vector the coannotationsect type and is long enough to proceed
-  assert_that(is.vector(annotations),
-              is.numeric(annotations),
-              noNA(annotations),
-              msg = "the annotations vector is either 1) not a vector, or 2) is not numeric or 3) has missing values")
-  assert_that(length(annotations) == length(rr), msg = "annotations and RR vectors need to be of the same length")
-
-  splitrr <- split_all_into_runs(rr, annotations, throwError)
   
-  # this below happens if there are only non-sinus beats
-  if (is.null(splitrr)) {
-    return(list(
-      direction_up = c(up1 = -1),
-      direction_down = c(down1 = -1),
-      no_change = c(N1 = -1)
-    ))
+  # 1) Compute differences and their sign
+  diffRR <- diff(RR)
+  signRR <- sign_vec(diffRR)
+  
+  # 2) Identify indices where we "break" runs (anotacje != 0)
+  ind_wyrz1 <- which(anotacje != 0)
+  ind_wyrz2 <- ind_wyrz1 - 1
+  
+  # Edge case: if the largest index is beyond the last diff, set it to length(diffRR) - 1
+  if (length(ind_wyrz1) >= 1 && max(ind_wyrz1) >= length(signRR)) {
+    bad_index <- which(ind_wyrz1 == max(ind_wyrz1))
+    ind_wyrz1[bad_index] <- length(signRR) - 1
   }
-  directions <- splitrr$directions
-  up_runs <- splitrr$all_runs[directions == "Up"]
-  down_runs <- splitrr$all_runs[directions == "Down"]
-  no_change_runs <- splitrr$all_runs[directions == "no_Change"]
-  up_runs_counts <- unlist(lapply(up_runs, length))
-  down_runs_counts <- unlist(lapply(down_runs, length))
-  no_change_runs_counts <- unlist(lapply(no_change_runs, length))
-
-  ## getting maximum lengths of the respective runs
-  max_up <- ifelse(length(up_runs_counts > 0), max(up_runs_counts), 0)
-  max_down <-
-    ifelse(length(down_runs_counts > 0), max(down_runs_counts), 0)
-  max_no_change <-
-    ifelse(length(no_change_runs_counts) > 0,
-           max(no_change_runs_counts),
-           0)
-
-  ## now counting
-  up_runs_accumulator <- c()
-  down_runs_accumulator <- c()
-  zero_change_runs_accumulator <- c()
-
-  #directionup
-  for (idx_up in seq(length = max_up)) {
-    up_runs_accumulator <-
-      c(up_runs_accumulator, sum(up_runs_counts == idx_up))
-  }
-  for (idx_down in seq(length = max_down)) {
-    down_runs_accumulator <-
-      c(down_runs_accumulator, sum(down_runs_counts == idx_down))
-  }
-  for (idx_no_change in seq(length = max_no_change)) {
-    zero_change_runs_accumulator <-
-      c(zero_change_runs_accumulator,
-        sum(no_change_runs_counts == idx_no_change))
-  }
-
-  # now assigning meaningful names to the resulting vectors
-  if (length(up_runs_accumulator) > 0)
-    names(up_runs_accumulator) <-
-      paste(rep("up", length(up_runs_accumulator)),
-            seq_len(length(up_runs_accumulator)), sep = "")
-  if (length(down_runs_accumulator) > 0)
-    names(down_runs_accumulator) <-
-      paste(rep("down", length(down_runs_accumulator)),
-            seq_len(length(down_runs_accumulator)), sep = "")
-  if (length(zero_change_runs_accumulator) > 0)
-    names(zero_change_runs_accumulator) <-
-      paste(rep("no_change", length(zero_change_runs_accumulator)),
-            seq_len(length(zero_change_runs_accumulator)), sep = "")
-  return(
-    list(
-      direction_up = up_runs_accumulator,
-      direction_down = down_runs_accumulator,
-      no_change = zero_change_runs_accumulator
+  
+  # Combine and set those indices to 16 (same logic as Python)
+  ind_wyrz <- unique(c(ind_wyrz1, ind_wyrz2))
+  # Make sure we only mark valid positions
+  ind_wyrz <- ind_wyrz[ind_wyrz >= 1 & ind_wyrz <= length(signRR)]
+  signRR[ind_wyrz] <- 16
+  
+  # 3) Count consecutive runs of up and down
+  #    By default, we allocate up to 40 runs (as in Python),
+  #    but we will later trim to the actual max run length.
+  max_runs <- 40
+  akumulator_up   <- rep(0, max_runs)
+  akumulator_down <- rep(0, max_runs)
+  
+  # Edge case: If RR has length 1 or less, nothing to diff => return zeros
+  if (length(signRR) == 0) {
+    return(
+      list(
+        direction_up   = setNames(numeric(0), character(0)),
+        direction_down = setNames(numeric(0), character(0)),
+        no_change      = c(no_change1 = 0)
+      )
     )
+  }
+  
+  index_up   <- 0
+  index_down <- 0
+  flaga      <- signRR[1]
+  
+  # Iterate through signRR from the 2nd element to the end
+  for (i in seq(2, length(signRR))) {
+    znak <- signRR[i]
+    
+    # Continue run up
+    if (flaga == 1 && znak == 1) {
+      index_up <- index_up + 1
+    }
+    # Continue run down
+    if (flaga == -1 && znak == -1) {
+      index_down <- index_down + 1
+    }
+    # Up run ended
+    if (flaga == 1 && znak != 1) {
+      akumulator_up[index_up + 1] <- akumulator_up[index_up + 1] + 1
+      index_up <- 0
+    }
+    # Down run ended
+    if (flaga == -1 && znak != -1) {
+      akumulator_down[index_down + 1] <- akumulator_down[index_down + 1] + 1
+      index_down <- 0
+    }
+    
+    flaga <- znak
+  }
+  
+  # Edge-case check for the final run
+  # (Same logic as in the Python code: we look at the very last 'znak')
+  last_znak <- signRR[length(signRR)]
+  if (flaga == 1 && last_znak == 1) {
+    akumulator_up[index_up + 1] <- akumulator_up[index_up + 1] + 1
+  }
+  if (flaga == -1 && last_znak == -1) {
+    akumulator_down[index_down + 1] <- akumulator_down[index_down + 1] + 1
+  }
+  
+  # 4) Count "no change"
+  #    In the Python code, this is simply the total number of diff == 0.
+  not_changed <- sum(signRR == 0)
+  
+  # 5) Trim up/down arrays to the maximum run length actually present
+  #    (including zeros for missing lengths up to that max)
+  # Find the longest run for each
+  max_up_len   <- if (any(akumulator_up != 0))   max(which(akumulator_up != 0))   else 0
+  max_down_len <- if (any(akumulator_down != 0)) max(which(akumulator_down != 0)) else 0
+  
+  # Subset the vectors
+  if (max_up_len > 0) {
+    up_runs <- akumulator_up[seq_len(max_up_len)]
+    names(up_runs) <- paste0("up", seq_len(max_up_len))
+  } else {
+    # No up-runs at all
+    up_runs <- numeric(0)
+  }
+  
+  if (max_down_len > 0) {
+    down_runs <- akumulator_down[seq_len(max_down_len)]
+    names(down_runs) <- paste0("down", seq_len(max_down_len))
+  } else {
+    # No down-runs at all
+    down_runs <- numeric(0)
+  }
+  
+  # "No change" is just a single count in the Python logic
+  # Name it "no_change1" to fit your requested output style
+  no_change_runs <- c(not_changed)
+  names(no_change_runs) <- "no_change1"
+  
+  # 6) Return a list with the three vectors
+  list(
+    direction_up   = up_runs,
+    direction_down = down_runs,
+    no_change      = no_change_runs
   )
 }
 

@@ -4,14 +4,7 @@
 \alias{countruns}
 \title{Counting monotonic runs in an RR intervals time series.}
 \usage{
-countruns(rr, annotations = c(), throwError = FALSE)
-}
-\arguments{
-\item{rr}{vector containing RR intervals time series}
-
-\item{annotations}{vector containing annotations for the RR intervals}
-
-\item{throwError}{whether error should return NULL or throw an error}
+countruns(RR, anotacje)
 }
 \value{
 a list with keys dicection_up, direction_down, no_change whose values are vectors containing corresponding runs types statistics
