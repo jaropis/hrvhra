@@ -239,7 +239,7 @@ hrvhra <- function(rr,
   sd2 <- sqrt(var((rr_i + rr_ii) / sqrt(2)) * correct)
   sdnn <- sqrt(1 / 2 * (sd2 ^ 2 + sd1 ^ 2))
   sd1I <- sqrt((1 / n) * sum((rr_i - rr_ii) ^ 2) / 2)
-  mean_rr <- mean(rr, na.rm = TRUE)
+  mean_rr <- mean(rr[annotations == 0], na.rm = TRUE)
 
   if (sdnn == 0)
     warning("There is no variability - is this a pacemaker?")
