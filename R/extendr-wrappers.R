@@ -61,5 +61,13 @@ countruns_rust <- function(rr, annotations) {
   )
 }
 
+#' Get the sample entropy for a signal
+#' @param signal signal for which the sample entropy will be calculated
+#' @param m embedding dimension - int
+#' @param r comparison radius - float
+#' @return a float
+#' @export
+samp_en <- function(signal, m, r) .Call(wrap__samp_en, signal, m, r)
+
 
 # nolint end
