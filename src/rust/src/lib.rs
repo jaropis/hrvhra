@@ -65,12 +65,8 @@ fn analyze_rr_runs(rr: &[f64], annotations: &[i32], write_last_run: bool) -> Rob
 fn get_runs_summary(rr: &[f64], annotations: &[i32], write_last_run: bool) -> Robj {
     // creating a new runs analyzer
     let mut runs = RRRuns::new(rr.to_vec(), annotations.to_vec(), write_last_run);
-    println!("from rust rr: {:?}", rr.to_vec());
-    println!("from rust annotations: {:?}", annotations.to_vec());
     // getting the summary
-    // dale zdebuguj w kodzie rustowym skąd biorą się same zera
     let mut summary = runs.get_runs_summary();
-    println!("from rust {:?}", summary);
     // convert summary to a flattened vector to pass to R
     let mut flat_data = Vec::new();
     let rows = summary.len();
