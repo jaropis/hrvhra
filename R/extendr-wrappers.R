@@ -32,7 +32,7 @@ get_runs_summary <- function(rr, annotations, write_last_run) .Call(wrap__get_ru
 #' @param v Numeric vector
 #' @return A vector with trimmed trailing zeros
 trim_trailing_zeros <- function(v) {
-  if (all(v == 0)) return(integer(0))  # Return empty vector if all elements are zero
+  if (all(v == 0)) return(0)  # Return empty vector if all elements are zero
   v[1:(length(v) - which.max(rev(v) != 0) + 1)]
 }
 
@@ -41,6 +41,9 @@ trim_trailing_zeros <- function(v) {
 #' @param stem stem of the name for vector elements
 #' @param return numeric vector with named elements
 name_elements <- function(v, stem) {
+  if (!length(v)) {
+    return(paste0(stem, 1))
+  }
   names <- paste0(rep(stem, length(v)), as.character(1:length(v)))
   names(v) <- names
   return(v)
