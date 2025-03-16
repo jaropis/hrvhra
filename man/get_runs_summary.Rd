@@ -2,7 +2,7 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{get_runs_summary}
 \alias{get_runs_summary}
-\title{Get a summary of runs analysis from rust}
+\title{Get a summary of runs analysis}
 \usage{
 get_runs_summary(rr, annotations, write_last_run)
 }
@@ -17,5 +17,5 @@ get_runs_summary(rr, annotations, write_last_run)
 A vector of data with rows and columns as attributes
 }
 \description{
-Get a summary of runs analysis from rust
+Get a summary of runs analysis
 }
