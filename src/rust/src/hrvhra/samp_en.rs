@@ -16,55 +16,34 @@ fn ncm_correlation_sums(signal: &[f64], m: usize, r: f64) -> Vec<f64> {
     let m_counts = *m_range.iter().max().unwrap() + 1;
     let mut corsum_matrix = vec![0.0; m_counts];
 
-    // size of Norm component matrix
-    let size_x = signal.len() - 1;
-    let size_y = signal.len() - 1;
-
-    // triangular NCM matrix
-    let mut ncm = vec![vec![0.0; size_y]; size_x];
-    for i_row in 0..size_x {
-        for j_column in 0..size_y {
-            if i_row + (j_column + 1) * tau <= signal.len() - 1 {
-                ncm[i_row][j_column] = (signal[i_row] - signal[i_row + (j_column + 1) * tau]).abs();
-            }
-        }
-    }
-
+    // avoiding creating the full NCM matrix in memory
     for &m_val in &m_range {
-        for current_row_idx in 0..(ncm.len() - m_val - 1) {
-            // extracting the current submatrix
-            let mut current_row = Vec::new();
-            for i in 0..=m_val {
-                let mut row = Vec::new();
-                for j in 0..(ncm[0].len() - current_row_idx - m_val) {
-                    row.push(ncm[current_row_idx + i][j]);
+        let mut count = 0.0;
+
+        // iterating through possible template vectors
+        for i in 0..(signal.len() - m_val * tau - 1) {
+            // comparing with other template vectors
+            for j in (i + 1)..(signal.len() - m_val * tau) {
+                // calculating maximum absolute difference between corresponding points
+                let mut max_diff = 0.0;
+                for k in 0..=m_val {
+                    let diff = (signal[i + k * tau] - signal[j + k * tau]).abs();
+                    if diff > max_diff {
+                        max_diff = diff;
+                    }
                 }
-                current_row.push(row);
-            }
 
-            // calculating max norms
-            if !current_row.is_empty() && !current_row[0].is_empty() {
-                let max_norms: Vec<f64> = (0..current_row[0].len())
-                    .map(|j| {
-                        let mut max_val: f64 = 0.0;
-                        for i in 0..current_row.len() {
-                            max_val = max_val.max(current_row[i][j]);
-                        }
-                        max_val
-                    })
-                    .collect();
-
-                corsum_matrix[m_val] += max_norms.iter().filter(|&&x| x <= r).count() as f64;
+                // counting templates within radius r
+                if max_diff <= r {
+                    count += 1.0;
+                }
             }
         }
-    }
 
-    // normalizing correlation sum, multiply by 2 due to property of triangular matrix and exclude duplicates
-    for &m_val in &m_range {
+        // storing the normalized correlation sum
         let factor_a = (signal.len() - m_val * tau) as f64;
         let factor_b = (signal.len() - 1 - m_val * tau) as f64;
-        let factor = factor_a * factor_b;
-        corsum_matrix[m_val] = corsum_matrix[m_val] * 2.0 * 1.0 / factor;
+        corsum_matrix[m_val] = count * 2.0 / (factor_a * factor_b);
     }
 
     corsum_matrix
