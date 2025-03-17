@@ -2,7 +2,7 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{analyze_rr_runs}
 \alias{analyze_rr_runs}
-\title{Create a new RRRuns object and return the runs analysis from rust}
+\title{Create a new RRRuns object and return the runs analysis}
 \usage{
 analyze_rr_runs(rr, annotations, write_last_run)
 }
@@ -17,5 +17,5 @@ analyze_rr_runs(rr, annotations, write_last_run)
 A list containing the runs analysis
 }
 \description{
-Create a new RRRuns object and return the runs analysis from rust
+Create a new RRRuns object and return the runs analysis
 }

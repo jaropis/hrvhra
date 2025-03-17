@@ -14,55 +14,21 @@ NULL
 #' @export
 hello_world <- function() .Call(wrap__hello_world)
 
-#' Create a new RRRuns object and return the runs analysis from rust
+#' Create a new RRRuns object and return the runs analysis
 #' @param rr Vector of RR intervals
 #' @param annotations Vector of annotations (0 for normal beats, non-zero for abnormal)
 #' @param write_last_run Whether to include the last run in the analysis
 #' @return A list containing the runs analysis
+#' @export
 analyze_rr_runs <- function(rr, annotations, write_last_run) .Call(wrap__analyze_rr_runs, rr, annotations, write_last_run)
 
-#' Get a summary of runs analysis from rust
+#' Get a summary of runs analysis
 #' @param rr Vector of RR intervals
 #' @param annotations Vector of annotations (0 for normal beats, non-zero for abnormal)
 #' @param write_last_run Whether to include the last run in the analysis
 #' @return A vector of data with rows and columns as attributes
-get_runs_summary <- function(rr, annotations, write_last_run) .Call(wrap__get_runs_summary, rr, annotations, write_last_run)
-
-#' Function to trim trailing zeros
-#' @param v Numeric vector
-#' @return A vector with trimmed trailing zeros
-trim_trailing_zeros <- function(v) {
-  if (all(v == 0)) return(0)  # Return empty vector if all elements are zero
-  v[1:(length(v) - which.max(rev(v) != 0) + 1)]
-}
-
-#' Function giving names to vector elements
-#' @param v numeric vector
-#' @param stem stem of the name for vector elements
-#' @param return numeric vector with named elements
-name_elements <- function(v, stem) {
-  if (!length(v)) {
-    return(paste0(stem, 1))
-  }
-  names <- paste0(rep(stem, length(v)), as.character(1:length(v)))
-  names(v) <- names
-  return(v)
-}
-
-#' Get a summary of runs analysis using rust code
-#' @param rr Vector of RR intervals
-#' @param annotations Vector of annotations (0 for normal beats, non-zero for abnormal)
-#' @return A vector of data with rows and columns as attributes
 #' @export
-countruns_rust <- function(rr, annotations) {
-  result <- get_runs_summary(rr, as.integer(annotations), TRUE)
-  results_matrix <- matrix(result$data, result$cols, result$rows)
-  list(
-    direction_up = trim_trailing_zeros(results_matrix[2, ]) %>% name_elements(., "up"),
-    direction_down = trim_trailing_zeros(results_matrix[1, ]) %>% name_elements(., "down"),
-    no_change = trim_trailing_zeros(results_matrix[3, ]) %>% name_elements(., "no_change")
-  )
-}
+get_runs_summary <- function(rr, annotations, write_last_run) .Call(wrap__get_runs_summary, rr, annotations, write_last_run)
 
 #' Get the sample entropy for a signal
 #' @param signal signal for which the sample entropy will be calculated
