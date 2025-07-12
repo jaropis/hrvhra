@@ -43,6 +43,7 @@ trim_trailing_zeros <- function(v) {
 #' @param stem stem of the name for vector elements
 #' @param return numeric vector with named elements
 name_elements <- function(v, stem) {
+  if (length(v) == 0) return(NULL)
   names <- paste0(rep(stem, length(v)), as.character(1:length(v)))
   names(v) <- names
   return(v)
@@ -56,11 +57,12 @@ name_elements <- function(v, stem) {
 countruns_rust <- function(rr, annotations) {
   result <- get_runs_summary(rr, as.integer(annotations), TRUE)
   results_matrix <- matrix(result$data, result$cols, result$rows)
-  list(
+  result <- list(
     direction_up = trim_trailing_zeros(results_matrix[2, ]) %>% name_elements(., "up"),
     direction_down = trim_trailing_zeros(results_matrix[1, ]) %>% name_elements(., "down"),
     no_change = trim_trailing_zeros(results_matrix[3, ]) %>% name_elements(., "no_change")
   )
+  result
 }
 
 #' Get the sample entropy for a signal
