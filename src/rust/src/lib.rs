@@ -64,6 +64,7 @@ fn get_runs_summary(rr: &[f64], annotations: &[i32], write_last_run: bool) -> Ro
     let mut runs = RRRuns::new(rr.to_vec(), annotations.to_vec(), write_last_run);
     // getting the summary
     let mut summary = runs.get_runs_summary();
+    let mut vars = runs.get_full_runs()
     // convert summary to a flattened vector to pass to R
     let mut flat_data = Vec::new();
     let rows = summary.len();
