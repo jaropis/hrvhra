@@ -52,16 +52,24 @@ name_elements <- function(v, stem) {
 #' Get a summary of runs analysis using rust code
 #' @param rr Vector of RR intervals
 #' @param annotations Vector of annotations (0 for normal beats, non-zero for abnormal)
-#' @return A vector of data with rows and columns as attributes
+#' @return a list with results for runs counts and results for runs variances
 #' @export
-countruns_rust <- function(rr, annotations) {
+getruns_rust <- function(rr, annotations) {
   result <- get_runs_summary(rr, as.integer(annotations), TRUE)
-  results_matrix <- matrix(result$data, result$cols, result$rows)
-  result <- list(
-    direction_up = trim_trailing_zeros(results_matrix[2, ]) %>% name_elements(., "up"),
-    direction_down = trim_trailing_zeros(results_matrix[1, ]) %>% name_elements(., "down"),
-    no_change = trim_trailing_zeros(results_matrix[3, ]) %>% name_elements(., "no_change")
+  counts_results_matrix <- do.call(cbind, result$results_counts)
+  vars_results_matrix <- do.call(cbind, result$results_counts)
+  counts_result <- list(
+    direction_up = trim_trailing_zeros(counts_results_matrix[2, ]) %>% name_elements(., "up"),
+    direction_down = trim_trailing_zeros(counts_results_matrix[1, ]) %>% name_elements(., "down"),
+    no_change = trim_trailing_zeros(counts_results_matrix[3, ]) %>% name_elements(., "no_change")
   )
+  vars_result <- list(
+    direction_up = trim_trailing_zeros(vars_results_matrix[2, ]) %>% name_elements(., "up"),
+    direction_down = trim_trailing_zeros(vars_results_matrix[1, ]) %>% name_elements(., "down"),
+    no_change = trim_trailing_zeros(vars_results_matrix[3, ]) %>% name_elements(., "no_change")
+  )
+  result = list(runs_counts = counts_result, runs_vars = vars_result)
+
   result
 }
 
