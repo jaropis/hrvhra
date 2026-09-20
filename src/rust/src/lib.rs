@@ -1,14 +1,7 @@
 use extendr_api::prelude::*;
 
 // import your existing code
-mod hrvhra {
-    pub mod common;
-    pub mod data_reader;
-    pub mod runs;
-    pub mod runs_asym_helpers;
-    pub mod samp_en;
-    pub mod stat_funcs;
-}
+mod hrvhra;
 
 use hrvhra::common::Annotations;
 use hrvhra::common::VarType;
@@ -31,8 +24,16 @@ fn hello_world() -> &'static str {
 /// @export
 #[extendr]
 fn analyze_rr_runs(rr: &[f64], annotations: &[i32], write_last_run: bool) -> Robj {
+    let local_annotations = Annotations::to_vec_of_annot(
+        annotations
+            .iter()
+            .copied()
+            .map(u8::try_from)
+            .collect::<std::result::Result<Vec<u8>, _>>()
+            .expect("annotation codes must be between 0 and 255"),
+    );
     // creating a new runs analyzer
-    let mut runs = RRRuns::new(rr.to_vec(), annotations.to_vec(), write_last_run);
+    let mut runs = RRRuns::new(rr.to_vec(), local_annotations, write_last_run);
 
     // getting the runs summary
     let mut summary = runs.get_runs_summary();
@@ -66,8 +67,16 @@ fn analyze_rr_runs(rr: &[f64], annotations: &[i32], write_last_run: bool) -> Rob
 /// @export
 #[extendr]
 fn get_runs_summary(rr: &[f64], annotations: &[i32], write_last_run: bool) -> Robj {
+    let local_annotations = Annotations::to_vec_of_annot(
+        annotations
+            .iter()
+            .copied()
+            .map(u8::try_from)
+            .collect::<std::result::Result<Vec<u8>, _>>()
+            .expect("annotation codes must be between 0 and 255"),
+    );
     // creating a new runs analyzer
-    let mut runs = RRRuns::new(rr.to_vec(), annotations.to_vec(), write_last_run);
+    let mut runs = RRRuns::new(rr.to_vec(), local_annotations, write_last_run);
     // getting the summary
     let (runs_summary, vars_summary) = runs.get_runs();
     // convert summary to a flattened vector to pass to R

@@ -55,18 +55,18 @@ name_elements <- function(v, stem) {
 #' @return a list with results for runs counts and results for runs variances
 #' @export
 getruns_rust <- function(rr, annotations) {
-  result <- get_runs_summary(rr, as.integer(annotations), TRUE)
-  counts_results_matrix <- do.call(cbind, result$results_counts)
-  vars_results_matrix <- do.call(cbind, result$results_counts)
+  result <- get_runs_summary(rr, annotations, TRUE)
+  counts_results_matrix <- do.call(cbind, result$runs_counts)
+  vars_results_matrix <- do.call(cbind, result$runs_vars)
   counts_result <- list(
-    direction_up = trim_trailing_zeros(counts_results_matrix[2, ]) %>% name_elements(., "up"),
-    direction_down = trim_trailing_zeros(counts_results_matrix[1, ]) %>% name_elements(., "down"),
-    no_change = trim_trailing_zeros(counts_results_matrix[3, ]) %>% name_elements(., "no_change")
+    decelerations = trim_trailing_zeros(counts_results_matrix[2, ]) %>% name_elements(., "DR"),
+    accelerations = trim_trailing_zeros(counts_results_matrix[1, ]) %>% name_elements(., "AR"),
+    neutral = trim_trailing_zeros(counts_results_matrix[3, ]) %>% name_elements(., "NR")
   )
   vars_result <- list(
-    direction_up = trim_trailing_zeros(vars_results_matrix[2, ]) %>% name_elements(., "up"),
-    direction_down = trim_trailing_zeros(vars_results_matrix[1, ]) %>% name_elements(., "down"),
-    no_change = trim_trailing_zeros(vars_results_matrix[3, ]) %>% name_elements(., "no_change")
+    decelerations = trim_trailing_zeros(vars_results_matrix[2, ]) %>% name_elements(., "DR"),
+    accelerations = trim_trailing_zeros(vars_results_matrix[1, ]) %>% name_elements(., "AR"),
+    neutral = trim_trailing_zeros(vars_results_matrix[3, ]) %>% name_elements(., "NR")
   )
   result = list(runs_counts = counts_result, runs_vars = vars_result)
 

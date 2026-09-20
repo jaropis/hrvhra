@@ -1,6 +1,6 @@
-use crate::common::Annotations;
-use crate::common::VarType;
-use crate::runs_asym_helpers::sd_1_2_contribs;
+use super::common::Annotations;
+use super::common::VarType;
+use super::runs_asym_helpers::sd_1_2_contribs;
 use std::cmp;
 use std::collections::HashMap;
 use std::hash::Hash;

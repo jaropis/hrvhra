@@ -1,4 +1,4 @@
-use crate::common::Annotations;
+use super::common::Annotations;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 pub struct RRSeries {
