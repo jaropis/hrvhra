@@ -165,7 +165,6 @@ impl RRRuns {
             ];
             summary.push(row);
         }
-
         // if summary is empty (no runs found), return a single row of zeros
         if summary.is_empty() {
             println!("summary is empty???");

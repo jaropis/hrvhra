@@ -63,12 +63,17 @@ getruns_rust <- function(rr, annotations) {
     accelerations = trim_trailing_zeros(counts_results_matrix[1, ]) %>% name_elements(., "AR"),
     neutral = trim_trailing_zeros(counts_results_matrix[3, ]) %>% name_elements(., "NR")
   )
-  vars_result <- list(
-    decelerations = trim_trailing_zeros(vars_results_matrix[2, ]) %>% name_elements(., "DR"),
-    accelerations = trim_trailing_zeros(vars_results_matrix[1, ]) %>% name_elements(., "AR"),
-    neutral = trim_trailing_zeros(vars_results_matrix[3, ]) %>% name_elements(., "NR")
+  vars_result_Var1 <- list(
+    decelerations = trim_trailing_zeros(vars_results_matrix[2, ]) %>% name_elements(., "SD1_DR"),
+    accelerations = trim_trailing_zeros(vars_results_matrix[1, ]) %>% name_elements(., "SD1_AR"),
+    neutral = trim_trailing_zeros(vars_results_matrix[3, ]) %>% name_elements(., "SD1_NR")
   )
-  result = list(runs_counts = counts_result, runs_vars = vars_result)
+  vars_result_Var2 <- list(
+    decelerations = trim_trailing_zeros(vars_results_matrix[5, ]) %>% name_elements(., "DR"),
+    accelerations = trim_trailing_zeros(vars_results_matrix[4, ]) %>% name_elements(., "AR"),
+    neutral = trim_trailing_zeros(vars_results_matrix[6, ]) %>% name_elements(., "NR")
+  )
+  result = list(runs_counts = counts_result, runs_vars = list(var1 = vars_result_Var1, var2 = vars_result_Var2))
 
   result
 }
